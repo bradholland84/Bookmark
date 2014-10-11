@@ -7,6 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
+
+import com.parse.ParseQueryAdapter;
 
 
 public class MainBookActivity extends Activity {
@@ -17,6 +20,12 @@ public class MainBookActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_book);
 
+        ParseQueryAdapter<Book> adapter = new ParseQueryAdapter<Book>(this, Book.class);
+        adapter.setTextKey("title");
+        ListView booksListView = (ListView) this.findViewById(R.id.books_listview);
+        booksListView.setAdapter(adapter);
+
+
         Button addNewBook = (Button) findViewById(R.id.btn_add_book);
         addNewBook.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,10 +35,6 @@ public class MainBookActivity extends Activity {
             }
         });
     }
-
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
