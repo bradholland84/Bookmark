@@ -1,27 +1,34 @@
 package com.android.bradholland.bookmark;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.parse.Parse;
-import com.parse.ParseAnalytics;
-import com.parse.ParseObject;
+import android.view.View;
+import android.widget.Button;
 
 
 public class MainBookActivity extends Activity {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_book);
 
-
-
-        ParseObject testObject = new ParseObject("TestObject");
-        testObject.put("foo", "bar");
-        testObject.saveInBackground();
+        Button addNewBook = (Button) findViewById(R.id.btn_add_book);
+        addNewBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainBookActivity.this, AddBookActivity.class);
+                startActivity(intent);
+            }
+        });
     }
+
+
+
 
 
     @Override

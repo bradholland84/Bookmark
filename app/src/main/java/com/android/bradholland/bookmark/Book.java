@@ -3,6 +3,7 @@ package com.android.bradholland.bookmark;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 /**
  * Created by Brad on 10/8/2014.
@@ -10,6 +11,10 @@ import com.parse.ParseQuery;
 
 @ParseClassName("Books")
 public class Book extends ParseObject{
+
+    public Book() {
+
+    }
 
     public String getTitle() {
         return getString("title");
@@ -33,6 +38,14 @@ public class Book extends ParseObject{
 
     public void setrating(double value) {
         put("rating", value);
+    }
+
+    public ParseUser getUser() {
+        return getParseUser("user");
+    }
+
+    public void setUser(ParseUser value) {
+        put("user", value);
     }
 
     public static ParseQuery<Book> getQuery() {
