@@ -24,8 +24,6 @@ public class MainBookActivity extends Activity {
         adapter.setTextKey("title");
         ListView booksListView = (ListView) this.findViewById(R.id.books_listview);
         booksListView.setAdapter(adapter);
-
-
         Button addNewBook = (Button) findViewById(R.id.btn_add_book);
         addNewBook.setOnClickListener(new View.OnClickListener() {
             @Override
