@@ -10,6 +10,8 @@ import com.parse.ParseObject;
  */
 public class App extends Application {
 
+    public static final String INTENT_EXTRA_TITLE = "title";
+    public static final String INTENT_EXTRA_DESCRIPTION = "description";
 
     @Override
     public void onCreate() {

@@ -1,6 +1,7 @@
 package com.android.bradholland.bookmark;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +22,8 @@ public class AddBookActivity extends Activity {
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Button saveBookButton;
+    private String title;
+    private String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +31,8 @@ public class AddBookActivity extends Activity {
 
         setContentView(R.layout.add_book_layout);
 
-       // Intent intent = getIntent();
+        Intent intent = getIntent();
+       // title = intent.getParcelableExtra()
 
         titleEditText = (EditText) findViewById(R.id.et_title);
         descriptionEditText = (EditText) findViewById(R.id.et_description);
@@ -84,6 +88,7 @@ public class AddBookActivity extends Activity {
             @Override
             public void done(ParseException e) {
                 finish();
+               // doListQuery();
             }
         });
     }
