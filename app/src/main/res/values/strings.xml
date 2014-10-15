@@ -29,4 +29,5 @@
     <string name="save_book">Save book</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
+    <string name="log_out">Log out</string>
 </resources>

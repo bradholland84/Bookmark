@@ -23,7 +23,6 @@ import java.util.List;
 
 public class MainBookActivity extends Activity {
 
-    private ParseQueryAdapter<Book> booksQueryAdapter;
     private String selectedBookObjectId;
 
     @Override
@@ -35,14 +34,7 @@ public class MainBookActivity extends Activity {
         ParseUser currentUser = ParseUser.getCurrentUser();
 
         //set up book query
-        ParseQuery<Book> query = ParseQuery.getQuery("Books");
-        query.whereEqualTo("user", currentUser);
-        query.findInBackground(new FindCallback<Book>() {
-            @Override
-            public void done(List<Book> booksList, ParseException e) {
-                Log.v("books", "retrieved" + booksList.size() + "books");
-            }
-        });
+        doListQuery(currentUser);
 
         //constructs an adapter to apply queried books' data into the listview
         final ParseQueryAdapter<Book> booksQueryAdapter = new ParseQueryAdapter<Book>(this, "Books") {
@@ -79,18 +71,16 @@ public class MainBookActivity extends Activity {
         });
 
 
-
-    Button addNewBook = (Button) findViewById(R.id.btn_add_book);
-        addNewBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainBookActivity.this, AddBookActivity.class);
-                //intent.putExtra(App.INTENT_EXTRA_TITLE, ****book title****)
-                startActivity(intent);
-            }
-        });
-
-
+        //set up click listener on books in list
+        Button addNewBook = (Button) findViewById(R.id.btn_add_book);
+            addNewBook.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(MainBookActivity.this, AddBookActivity.class);
+                    //intent.putExtra(App.INTENT_EXTRA_TITLE, ****book title****)
+                    startActivity(intent);
+                }
+            });
 
 
     }
@@ -98,10 +88,9 @@ public class MainBookActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-      //  doListQuery();
-
+        doListQuery(ParseUser.getCurrentUser());
+        Log.v("TAG", "onResume() called");
     }
-
 
 
     @Override
@@ -116,17 +105,32 @@ public class MainBookActivity extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            //noinspection SimplifiableIfStatement
+            case R.id.action_settings:
+                return true;
+
+            case R.id.log_out:
+                Log.v("logout", "log out called");
+                ParseUser.logOut();
+                Intent intent = new Intent(MainBookActivity.this, DispatchActivity.class);
+                startActivity(intent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
-  public void doListQuery() {
-       booksQueryAdapter.loadObjects();
+  public void doListQuery(ParseUser currentUser) {
+      ParseQuery<Book> query = ParseQuery.getQuery("Books");
+      query.whereEqualTo("user", currentUser);
+      query.findInBackground(new FindCallback<Book>() {
+          @Override
+          public void done(List<Book> booksList, ParseException e) {
+              Log.v("books", "retrieved" + booksList.size() + "books");
+          }
+      });
     }
 }
