@@ -81,14 +81,14 @@ public class AddBookActivity extends Activity {
 
         // Give public read access
         acl.setPublicReadAccess(true);
-        book.setACL(acl);
+        book.setACL(new ParseACL(ParseUser.getCurrentUser()));
 
         // Save the book
-        book.saveInBackground(new SaveCallback() {
+        book.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 finish();
-               // doListQuery();
+                // doListQuery();
             }
         });
     }

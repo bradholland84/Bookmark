@@ -126,9 +126,11 @@ public class MainBookActivity extends Activity {
   public void doListQuery(ParseUser currentUser) {
       ParseQuery<Book> query = ParseQuery.getQuery("Books");
       query.whereEqualTo("user", currentUser);
+      query.fromLocalDatastore();
       query.findInBackground(new FindCallback<Book>() {
           @Override
           public void done(List<Book> booksList, ParseException e) {
+              Book.pinAllInBackground("books", booksList);
               Log.v("books", "retrieved" + booksList.size() + "books");
           }
       });
