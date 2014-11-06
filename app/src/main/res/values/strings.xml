@@ -30,4 +30,6 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="log_out">Log out</string>
+    <string name="rating">Rating</string>
+    <string name="edit_book">Edit book</string>
 </resources>

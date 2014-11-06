@@ -36,7 +36,7 @@ public class Book extends ParseObject{
         return getDouble("rating");
     }
 
-    public void setrating(double value) {
+    public void setRating(double value) {
         put("rating", value);
     }
 

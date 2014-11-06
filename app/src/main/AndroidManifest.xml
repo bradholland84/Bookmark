@@ -21,7 +21,9 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait" />
-
+        <activity android:name=".bookDetailActivity"
+            android:label="@string/title"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_signup"

@@ -21,6 +21,7 @@ import com.parse.ParseUser;
 
 import java.util.List;
 
+
 public class MainBookActivity extends Activity {
 
     private String selectedBookObjectId;
@@ -45,8 +46,10 @@ public class MainBookActivity extends Activity {
                 }
                 TextView titleView = (TextView) view.findViewById(R.id.title_view);
                 TextView descriptionView = (TextView) view.findViewById(R.id.description_view);
+                TextView ratingView = (TextView) view.findViewById(R.id.rating_view);
                 titleView.setText(book.getTitle());
                 descriptionView.setText(book.getDescription());
+                ratingView.setText("Your Rating: " + book.getRating());
                 return view;
             }
         };
@@ -67,6 +70,10 @@ public class MainBookActivity extends Activity {
                 selectedBookObjectId = item.getObjectId();
                 Log.v("BookID", selectedBookObjectId);
 
+                Intent intent = new Intent(MainBookActivity.this, bookDetailActivity.class);
+                intent.putExtra("id", selectedBookObjectId);
+                startActivity(intent);
+
             }
         });
 
@@ -77,7 +84,6 @@ public class MainBookActivity extends Activity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(MainBookActivity.this, AddBookActivity.class);
-                    //intent.putExtra(App.INTENT_EXTRA_TITLE, ****book title****)
                     startActivity(intent);
                 }
             });

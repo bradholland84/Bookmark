@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 
 import com.parse.ParseACL;
 import com.parse.ParseException;
@@ -22,8 +23,10 @@ public class AddBookActivity extends Activity {
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Button saveBookButton;
+    private RatingBar ratingBar;
     private String title;
     private String description;
+    private float bookRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,13 @@ public class AddBookActivity extends Activity {
             }
         });
 
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                bookRating = rating;
+            }
+        });
 
     }
 
@@ -67,6 +77,7 @@ public class AddBookActivity extends Activity {
     private void addBook () {
         String title = titleEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
+
 
 
         // Create a post.
@@ -77,6 +88,7 @@ public class AddBookActivity extends Activity {
         book.setTitle(title);
         book.setDescription(description);
         book.setUser(ParseUser.getCurrentUser());
+        book.setRating(bookRating);
         ParseACL acl = new ParseACL();
 
         // Give public read access
