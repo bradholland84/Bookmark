@@ -1,5 +1,6 @@
 package com.android.bradholland.bookmark;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -54,6 +55,9 @@ public class bookDetailActivity extends Activity {
                 titleEditText.setText(title);
                 descriptionEditText.setText(description);
                 ratingBar.setRating((float)bookRating);
+
+                ActionBar ab = getActionBar();
+                ab.setTitle(title);
             }
         });
 
