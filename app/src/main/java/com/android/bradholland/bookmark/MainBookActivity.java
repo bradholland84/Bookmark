@@ -1,18 +1,18 @@
 package com.android.bradholland.bookmark;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -22,7 +22,7 @@ import com.parse.ParseUser;
 import java.util.List;
 
 
-public class MainBookActivity extends Activity {
+public class MainBookActivity extends ActionBarActivity {
 
     private String selectedBookObjectId;
 
@@ -61,6 +61,17 @@ public class MainBookActivity extends Activity {
         ListView books_listview = (ListView) findViewById(R.id.books_listview);
         books_listview.setAdapter(booksQueryAdapter);
 
+        //floating action button declaration for awesome material design type button
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_add_book);
+        fab.attachToListView(books_listview);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainBookActivity.this, AddBookActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // set up click listener for book items
         books_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -76,18 +87,6 @@ public class MainBookActivity extends Activity {
 
             }
         });
-
-
-        //set up click listener on books in list
-        Button addNewBook = (Button) findViewById(R.id.btn_add_book);
-            addNewBook.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(MainBookActivity.this, AddBookActivity.class);
-                    startActivity(intent);
-                }
-            });
-
 
     }
 

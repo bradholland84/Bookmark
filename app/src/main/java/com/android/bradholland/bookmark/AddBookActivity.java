@@ -1,8 +1,8 @@
 package com.android.bradholland.bookmark;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -18,7 +18,7 @@ import com.parse.SaveCallback;
 /**
  * Created by Brad on 10/10/2014.
  */
-public class AddBookActivity extends Activity {
+public class AddBookActivity extends ActionBarActivity {
 
     private EditText titleEditText;
     private EditText descriptionEditText;

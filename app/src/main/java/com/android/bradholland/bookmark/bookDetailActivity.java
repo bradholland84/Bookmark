@@ -1,9 +1,8 @@
 package com.android.bradholland.bookmark;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +15,7 @@ import com.parse.ParseQuery;
 /**
  * Created by Brad on 10/13/2014.
  */
-public class bookDetailActivity extends Activity {
+public class bookDetailActivity extends ActionBarActivity {
 
     private EditText titleEditText;
     private EditText descriptionEditText;
@@ -56,7 +55,7 @@ public class bookDetailActivity extends Activity {
                 descriptionEditText.setText(description);
                 ratingBar.setRating((float)bookRating);
 
-                ActionBar ab = getActionBar();
+                android.support.v7.app.ActionBar ab = getSupportActionBar();
                 ab.setTitle(title);
             }
         });
