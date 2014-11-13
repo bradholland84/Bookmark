@@ -22,7 +22,7 @@ import com.parse.ParseUser;
 import java.util.List;
 
 
-public class MainBookActivity extends ActionBarActivity {
+public class BookListActivity extends ActionBarActivity {
 
     private String selectedBookObjectId;
 
@@ -68,7 +68,7 @@ public class MainBookActivity extends ActionBarActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainBookActivity.this, AddBookActivity.class);
+                Intent intent = new Intent(BookListActivity.this, AddBookActivity.class);
                 startActivity(intent);
             }
         });
@@ -81,7 +81,7 @@ public class MainBookActivity extends ActionBarActivity {
                 selectedBookObjectId = item.getObjectId();
                 Log.v("BookID", selectedBookObjectId);
 
-                Intent intent = new Intent(MainBookActivity.this, bookDetailActivity.class);
+                Intent intent = new Intent(BookListActivity.this, bookDetailActivity.class);
                 intent.putExtra("id", selectedBookObjectId);
                 startActivity(intent);
 
@@ -119,7 +119,7 @@ public class MainBookActivity extends ActionBarActivity {
             case R.id.log_out:
                 Log.v("logout", "log out called");
                 ParseUser.logOut();
-                Intent intent = new Intent(MainBookActivity.this, DispatchActivity.class);
+                Intent intent = new Intent(BookListActivity.this, DispatchActivity.class);
                 startActivity(intent);
                 return true;
 

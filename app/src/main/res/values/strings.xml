@@ -23,8 +23,8 @@
     <string name="error_mismatched_passwords">enter the same password twice</string>
     <string name="error_join">", and "</string>
     <string name="error_end">.</string>
-    <string name="progress_login">Logging you in&#8230;</string>
-    <string name="progress_signup">Signing you up&#8230;</string>
+    <string name="progress_login">Logging you in…</string>
+    <string name="progress_signup">Signing you up…</string>
     <string name="add_book">Add new book</string>
     <string name="save_book">Save book</string>
     <string name="title">Title</string>
@@ -32,4 +32,6 @@
     <string name="log_out">Log out</string>
     <string name="rating">Rating</string>
     <string name="edit_book">Edit book</string>
+    <string name="title_activity_dashboard">Dashboard</string>
+
 </resources>

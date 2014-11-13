@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.bradholland.bookmark" >
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="com.android.bradholland.bookmark.App"
@@ -11,42 +12,44 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/CustomActionBarTheme" >
-
-
         <activity
-            android:name="com.android.bradholland.bookmark.MainBookActivity"
+            android:name="com.android.bradholland.bookmark.BookListActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="com.android.bradholland.bookmark.LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait" />
-        <activity android:name=".bookDetailActivity"
+        <activity
+            android:name="com.android.bradholland.bookmark.bookDetailActivity"
             android:label=" "
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SignUpActivity"
+            android:name="com.android.bradholland.bookmark.SignUpActivity"
             android:label="@string/title_activity_signup"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AddBookActivity"
+            android:name="com.android.bradholland.bookmark.AddBookActivity"
             android:label="Add Book"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".DispatchActivity"
+            android:name="com.android.bradholland.bookmark.DispatchActivity"
             android:noHistory="true" >
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-
         <activity
-            android:name=".WelcomeActivity"
+            android:name="com.android.bradholland.bookmark.WelcomeActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo" />
+        <activity
+            android:name="com.android.bradholland.bookmark.DashboardActivity"
+            android:label="@string/title_activity_dashboard" >
+        </activity>
     </application>
 
 </manifest>

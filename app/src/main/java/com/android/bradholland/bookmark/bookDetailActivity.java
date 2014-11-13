@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -19,12 +20,14 @@ public class bookDetailActivity extends ActionBarActivity {
 
     private EditText titleEditText;
     private EditText descriptionEditText;
+    private TextView minutesReadTextView;
     private Button saveBookButton;
     private RatingBar ratingBar;
     private String title;
     private String bookId;
     private String description;
     private double bookRating;
+    private int minutes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +44,20 @@ public class bookDetailActivity extends ActionBarActivity {
             @Override
             public void done(Book book, ParseException e) {
                 title = book.getTitle();
-                Log.v("TAGID", title);
                 description = book.getDescription();
-                Log.v("TAGID", description);
                 bookRating = book.getRating();
-                Log.v("TAGID", String.valueOf(bookRating));
+                minutes = book.getWeeklyMinutes();
 
                 titleEditText = (EditText) findViewById(R.id.et_title);
                 descriptionEditText = (EditText) findViewById(R.id.et_description);
                 ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
+                minutesReadTextView = (TextView) findViewById(R.id.tv_minutes);
 
                 titleEditText.setText(title);
                 descriptionEditText.setText(description);
                 ratingBar.setRating((float)bookRating);
+                minutesReadTextView.setText(Integer.toString(minutes));
+
 
                 android.support.v7.app.ActionBar ab = getSupportActionBar();
                 ab.setTitle(title);

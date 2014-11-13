@@ -16,6 +16,22 @@ public class Book extends ParseObject{
 
     }
 
+    public boolean isCurrentTitle() {
+        return getBoolean("currentTitle");
+    }
+
+    public void setCurrentTitle(boolean isCurrentTitle) {
+        put("currentTitle", isCurrentTitle);
+    }
+
+    public int getWeeklyMinutes() {
+        return getInt("weeklyMinutes");
+    }
+
+    public void setWeeklyMinutes(int value) {
+        put("weeklyMinutes", value);
+    }
+
     public String getTitle() {
         return getString("title");
     }
