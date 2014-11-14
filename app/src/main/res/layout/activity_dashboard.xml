@@ -24,4 +24,13 @@
         android:layout_alignRight="@+id/btn_title_list_intent"
         android:layout_alignEnd="@+id/btn_title_list_intent" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:src="@drawable/library_icon_128"
+        android:layout_alignTop="@+id/btn_title_list_intent"
+        android:layout_toRightOf="@+id/btn_title_list_intent"
+        android:layout_toEndOf="@+id/btn_title_list_intent" />
+
 </RelativeLayout>

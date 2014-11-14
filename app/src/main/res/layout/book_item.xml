@@ -32,7 +32,7 @@
         android:layout_alignParentStart="true"
         android:paddingRight="12dp"
         android:paddingBottom="12dp"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/library_icon_128"
         android:paddingTop="12dp" />
 
     <TextView

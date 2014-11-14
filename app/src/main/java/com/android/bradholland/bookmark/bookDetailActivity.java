@@ -56,7 +56,7 @@ public class bookDetailActivity extends ActionBarActivity {
                 titleEditText.setText(title);
                 descriptionEditText.setText(description);
                 ratingBar.setRating((float)bookRating);
-                minutesReadTextView.setText(Integer.toString(minutes));
+                minutesReadTextView.setText("Minutes read: " + Integer.toString(minutes));
 
 
                 android.support.v7.app.ActionBar ab = getSupportActionBar();
