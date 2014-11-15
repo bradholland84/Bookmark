@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/rating_view_detail"
         android:numStars="5"
-        android:rating="3.5"
+        android:rating="0.0"
         android:stepSize=".5"
         android:layout_below="@+id/tv_rating"
         android:layout_alignParentLeft="true"
