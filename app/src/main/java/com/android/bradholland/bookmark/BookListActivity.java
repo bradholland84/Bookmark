@@ -18,7 +18,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
-import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -29,7 +29,9 @@ import java.util.List;
 
 public class BookListActivity extends ActionBarActivity {
 
+    private ParseQueryAdapter<Book> booksQueryAdapter;
     private String selectedBookObjectId;
+    private String contextBookId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +39,24 @@ public class BookListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main_book);
 
         //get current user config and store
-        ParseUser currentUser = ParseUser.getCurrentUser();
+        final ParseUser currentUser = ParseUser.getCurrentUser();
 
         //set up book query
-        doListQuery(currentUser);
+        //doListQuery();
 
         //constructs an adapter to apply queried books' data into the listview
-        final ParseQueryAdapter<Book> booksQueryAdapter = new ParseQueryAdapter<Book>(this, "Books") {
+        ParseQueryAdapter.QueryFactory<Book> factory =
+            new ParseQueryAdapter.QueryFactory<Book>() {
+                public ParseQuery<Book> create() {
+                    ParseQuery query = new ParseQuery("Books");
+                    query.whereEqualTo("user", currentUser);
+                    query.orderByDescending("createdAt");
+                    return query;
+            }
+        };
+
+        booksQueryAdapter = new ParseQueryAdapter<Book>(this, factory) {
+
             @Override
             public View getItemView(Book book, View view, ViewGroup parent) {
                 if (view == null) {
@@ -64,14 +77,9 @@ public class BookListActivity extends ActionBarActivity {
                 descriptionView.setText(book.getDescription());
                 ratingView.setText("Your Rating: " + book.getRating());
 
-
-                //registerForContextMenu(view);
-
                 return view;
             }
         };
-
-
 
         booksQueryAdapter.setTextKey("title");
         booksQueryAdapter.setTextKey("description");
@@ -80,7 +88,7 @@ public class BookListActivity extends ActionBarActivity {
             @Override
             public void onLoading() {
                 Log.v("TAG", "ON LOADING CALLED");
-                progress.setTitle("Loading Books");
+                progress.setTitle("Loading your books");
                 progress.setMessage("Please wait...");
                 progress.show();
             }
@@ -89,20 +97,13 @@ public class BookListActivity extends ActionBarActivity {
             public void onLoaded(List<Book> books, Exception e) {
                 Log.v("TAG", "ON LOADED CALLED");
                 progress.hide();
-                doListQuery(ParseUser.getCurrentUser());
             }
         });
-
-
-
-
 
         // attach query adapter to view
         ListView books_listview = (ListView) findViewById(R.id.books_listview);
         books_listview.setAdapter(booksQueryAdapter);
         registerForContextMenu(books_listview);
-
-
 
         //floating action button declaration for awesome material design type button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_add_book);
@@ -136,7 +137,7 @@ public class BookListActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        doListQuery(ParseUser.getCurrentUser());
+        doListQuery();
         Log.v("TAG", "onResume() called");
     }
 
@@ -189,53 +190,57 @@ public class BookListActivity extends ActionBarActivity {
     popup.show();
   }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, view, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.booklist_item_overflow, menu);
-
-    }
-
- /*
-  public void registerForContextMenu(View view) {
-      view.setOnCreateContextMenuListener(this);
-  }
-
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, view, menuInfo);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.booklist_item_overflow, menu);
+        if (view.getId() == R.id.books_listview) {
+            ListView books_listview = (ListView) view;
+            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            Book selectedBook = (Book) books_listview.getItemAtPosition(info.position);
+            contextBookId = selectedBook.getObjectId();
+
+            Log.v("context menu", "this books' parse object id is = " + selectedBook.getObjectId() );
+
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.booklist_item_overflow, menu);
+        }
     }
 
+    @Override
     public boolean onContextItemSelected(MenuItem item) {
        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        int position = info.position;
+        String s = String.valueOf(info.id);
+            Log.v("context menu", s + "is this books' position");
+
             switch (item.getItemId()) {
+
             case R.id.make_current_title:
+                ParseQuery<Book> currentTitleQuery = ParseQuery.getQuery("Books");
+                currentTitleQuery.getInBackground(contextBookId, new GetCallback<Book>() {
+                    @Override
+                    public void done(Book book, ParseException e) {
+                        book.setCurrentTitle(true);
+                    }
+                });
+                doListQuery();
 
             case R.id.delete_book:
-                // delete it
+                Log.v("context menu", "Book should be deleted!");
+                ParseQuery<Book> deleteQuery = ParseQuery.getQuery("Books");
+                deleteQuery.getInBackground(contextBookId, new GetCallback<Book>() {
+                    @Override
+                    public void done(Book book, ParseException e) {
+                        book.deleteEventually();
+                    }
+                });
+                doListQuery();
+
             default: return false;
         }
     }
-*/
 
 
-
-
-  public void doListQuery(ParseUser currentUser) {
-      ParseQuery<Book> query = ParseQuery.getQuery("Books");
-      query.whereEqualTo("user", currentUser);
-      query.fromLocalDatastore();
-      query.findInBackground(new FindCallback<Book>() {
-          @Override
-          public void done(List<Book> booksList, ParseException e) {
-              Book.pinAllInBackground("books", booksList);
-              Log.v("books", "retrieved" + booksList.size() + "books");
-          }
-      });
-    }
+  public void doListQuery() {
+      booksQueryAdapter.loadObjects();
+  }
 }
