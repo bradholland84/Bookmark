@@ -69,7 +69,7 @@ public class AddBookActivity extends ActionBarActivity {
         });
 
         minutesSpinner = (Spinner) findViewById(R.id.spn_minutes_spinner);
-        final Integer[] items = new Integer[] {5, 10, 20, 30, 40, 50, 60, 75, 90, 105, 125, 150, 180, 210, 250, 285, 300, 350, 400, 450, 500, 600, 700, 850, 1000};
+        final Integer[] items = new Integer[] {0, 5, 10, 20, 30, 40, 50, 60, 75, 90, 105, 125, 150, 180, 210, 250, 285, 300, 350, 400, 450, 500, 600, 700, 850, 1000};
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, items);
         minutesSpinner.setAdapter(adapter);
 

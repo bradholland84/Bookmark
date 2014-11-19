@@ -1,5 +1,6 @@
 package com.android.bradholland.bookmark;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -74,6 +75,27 @@ public class BookListActivity extends ActionBarActivity {
 
         booksQueryAdapter.setTextKey("title");
         booksQueryAdapter.setTextKey("description");
+        booksQueryAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Book>() {
+            ProgressDialog progress = new ProgressDialog(BookListActivity.this);
+            @Override
+            public void onLoading() {
+                Log.v("TAG", "ON LOADING CALLED");
+                progress.setTitle("Loading Books");
+                progress.setMessage("Please wait...");
+                progress.show();
+            }
+
+            @Override
+            public void onLoaded(List<Book> books, Exception e) {
+                Log.v("TAG", "ON LOADED CALLED");
+                progress.hide();
+                doListQuery(ParseUser.getCurrentUser());
+            }
+        });
+
+
+
+
 
         // attach query adapter to view
         ListView books_listview = (ListView) findViewById(R.id.books_listview);
