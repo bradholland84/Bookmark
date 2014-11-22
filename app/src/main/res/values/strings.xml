@@ -32,6 +32,7 @@
     <string name="log_out">Log out</string>
     <string name="rating">Rating</string>
     <string name="edit_book">Edit book</string>
+    <string name="action_edit_book">Edit book</string>
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="delete_book">Delete book</string>
     <string name="make_current_title">Make current title</string>
