@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/camera_preview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,8 +14,9 @@
     <ImageButton
         android:id="@+id/camera_photo_button"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="64dp"
         android:layout_weight="1"
-        android:src="@drawable/ic_action_save" />
+        android:src="@drawable/ic_action_save"
+        android:layout_gravity="center_horizontal|bottom" />
 
-</LinearLayout>
+</FrameLayout>

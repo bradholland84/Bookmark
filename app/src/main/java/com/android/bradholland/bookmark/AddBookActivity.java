@@ -53,6 +53,7 @@ public class AddBookActivity extends ActionBarActivity {
 
 
         coverPhoto = (ParseImageView) findViewById(R.id.iv_cover_photo);
+        coverPhoto.setPlaceholder(getResources().getDrawable(R.drawable.default_cover));
         coverPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,8 +61,15 @@ public class AddBookActivity extends ActionBarActivity {
                 Fragment cameraFragment = new CameraFragment();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.add(R.id.add_book_layout, cameraFragment);
-                transaction.addToBackStack("NewBookFragment");
+                transaction.addToBackStack("Camera Fragment");
                 transaction.commit();
+            }
+        });
+
+        getFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                setParseCoverPhoto();
             }
         });
 
@@ -167,19 +175,23 @@ public class AddBookActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
-        ParseFile photoFile = getCurrentBook().getPhotoFile();
+        Log.v("pic", "OnResume called");
+        setParseCoverPhoto();
+    }
+
+    public void setParseCoverPhoto() {
+        final ParseFile photoFile = getCurrentBook().getPhotoFile();
         if (photoFile != null) {
             Log.v("pic", "file exists");
             coverPhoto.setParseFile(photoFile);
             coverPhoto.loadInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {
-                    //do stuff here?
+                    coverPhoto.setVisibility(View.VISIBLE);
                 }
             });
         } else {
-            Log.v("pic", "file doesn't exist yet");
+            Log.v("pic", "file NULL, doesn't exist yet");
         }
     }
-
 }

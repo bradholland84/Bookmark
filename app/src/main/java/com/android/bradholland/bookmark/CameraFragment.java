@@ -115,8 +115,7 @@ public class CameraFragment extends Fragment {
 
         // Resize photo from camera byte array
         Bitmap coverPhoto = BitmapFactory.decodeByteArray(data, 0, data.length);
-        Bitmap coverPhotoScaled = Bitmap.createScaledBitmap(coverPhoto, 400, 400
-                * coverPhoto.getHeight() / coverPhoto.getWidth(), false);
+        Bitmap coverPhotoScaled = Bitmap.createScaledBitmap(coverPhoto, 900, 600, false);
 
         // Override Android default landscape orientation and save portrait
         Matrix matrix = new Matrix();
@@ -156,7 +155,7 @@ public class CameraFragment extends Fragment {
     private void addPhotoToBookAndReturn(ParseFile photoFile) {
         ((AddBookActivity) getActivity()).getCurrentBook().setPhotoFile(photoFile);
         FragmentManager fm = getActivity().getFragmentManager();
-        fm.popBackStack("NewBookFragment",
+        fm.popBackStack("Camera Fragment",
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
