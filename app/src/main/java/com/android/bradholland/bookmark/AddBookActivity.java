@@ -40,6 +40,7 @@ public class AddBookActivity extends ActionBarActivity {
         setContentView(R.layout.add_book_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
        // title = intent.getParcelableExtra()

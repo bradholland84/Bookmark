@@ -41,6 +41,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         bookId = intent.getStringExtra("id");

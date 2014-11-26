@@ -15,23 +15,36 @@
         <activity
             android:name="com.android.bradholland.bookmark.BookListActivity"
             android:label="@string/app_name" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DashboardActivity" />
         </activity>
         <activity
             android:name="com.android.bradholland.bookmark.LoginActivity"
             android:label="@string/title_activity_login"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name="com.android.bradholland.bookmark.bookDetailActivity"
             android:label=" "
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".BookListActivity" />
+        </activity>
         <activity
             android:name="com.android.bradholland.bookmark.SignUpActivity"
             android:label="@string/title_activity_signup"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+        </activity>
         <activity
             android:name="com.android.bradholland.bookmark.AddBookActivity"
             android:label="Add Book"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".BookListActivity" />
+        </activity>
         <activity
             android:name="com.android.bradholland.bookmark.DispatchActivity"
             android:noHistory="true" >

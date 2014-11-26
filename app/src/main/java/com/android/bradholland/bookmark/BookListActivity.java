@@ -41,6 +41,8 @@ public class BookListActivity extends ActionBarActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
 
         //get current user config and store
         final ParseUser currentUser = ParseUser.getCurrentUser();
