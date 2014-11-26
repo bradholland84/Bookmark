@@ -1,6 +1,7 @@
 package com.android.bradholland.bookmark;
 
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -62,6 +63,14 @@ public class Book extends ParseObject{
 
     public void setUser(ParseUser value) {
         put("user", value);
+    }
+
+    public ParseFile getPhotoFile() {
+        return getParseFile("coverPhoto");
+    }
+
+    public void setPhotoFile(ParseFile file) {
+        put("coverPhoto", file);
     }
 
     public static ParseQuery<Book> getQuery() {

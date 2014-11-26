@@ -1,6 +1,8 @@
 package com.android.bradholland.bookmark;
 
-import android.content.Intent;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,8 +17,11 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.Spinner;
 
+import com.parse.GetDataCallback;
 import com.parse.ParseACL;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -25,6 +30,8 @@ import com.parse.SaveCallback;
  */
 public class AddBookActivity extends ActionBarActivity {
 
+    private Book book;
+    private ParseImageView coverPhoto;
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Button saveBookButton;
@@ -42,8 +49,21 @@ public class AddBookActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getIntent();
-       // title = intent.getParcelableExtra()
+       book = new Book();
+
+
+        coverPhoto = (ParseImageView) findViewById(R.id.iv_cover_photo);
+        coverPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getFragmentManager();
+                Fragment cameraFragment = new CameraFragment();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.add(R.id.add_book_layout, cameraFragment);
+                transaction.addToBackStack("NewBookFragment");
+                transaction.commit();
+            }
+        });
 
         titleEditText = (EditText) findViewById(R.id.et_title);
         descriptionEditText = (EditText) findViewById(R.id.et_description);
@@ -94,7 +114,7 @@ public class AddBookActivity extends ActionBarActivity {
         saveBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addBook();
+                addBook(book);
             }
         });
 
@@ -102,16 +122,13 @@ public class AddBookActivity extends ActionBarActivity {
     }
 
 
-    private void addBook () {
+    private void addBook (Book book) {
         String title = titleEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
         Log.v("TAGG", "minutes ====== > " + minutes);
 
 
-        // Create a post.
-       Book book = new Book();
-
-        // Set the book's title and description
+        // Set the book's data
 
         book.setTitle(title);
         book.setDescription(description);
@@ -129,7 +146,6 @@ public class AddBookActivity extends ActionBarActivity {
             @Override
             public void done(ParseException e) {
                 finish();
-                // doListQuery();
             }
         });
     }
@@ -144,5 +160,26 @@ public class AddBookActivity extends ActionBarActivity {
         saveBookButton.setEnabled(enabled);
     }
 
+    public Book getCurrentBook() {
+        return book;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ParseFile photoFile = getCurrentBook().getPhotoFile();
+        if (photoFile != null) {
+            Log.v("pic", "file exists");
+            coverPhoto.setParseFile(photoFile);
+            coverPhoto.loadInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    //do stuff here?
+                }
+            });
+        } else {
+            Log.v("pic", "file doesn't exist yet");
+        }
+    }
 
 }
