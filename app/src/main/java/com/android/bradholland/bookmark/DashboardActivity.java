@@ -3,6 +3,7 @@ package com.android.bradholland.bookmark;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,8 @@ public class DashboardActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
+        setSupportActionBar(toolbar);
 
         Button viewAllTitlesButton = (Button) findViewById(R.id.btn_title_list_intent);
         viewAllTitlesButton.setOnClickListener(new View.OnClickListener() {

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -37,6 +38,9 @@ public class BookListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_book);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
+        setSupportActionBar(toolbar);
 
         //get current user config and store
         final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -96,7 +100,7 @@ public class BookListActivity extends ActionBarActivity {
             @Override
             public void onLoaded(List<Book> books, Exception e) {
                 Log.v("TAG", "ON LOADED CALLED");
-                progress.hide();
+                progress.dismiss();
             }
         });
 
@@ -133,14 +137,6 @@ public class BookListActivity extends ActionBarActivity {
             }
         });
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        doListQuery();
-        Log.v("TAG", "onResume() called");
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -230,10 +226,11 @@ public class BookListActivity extends ActionBarActivity {
                 deleteQuery.getInBackground(contextBookId, new GetCallback<Book>() {
                     @Override
                     public void done(Book book, ParseException e) {
-                        book.deleteEventually();
+                        book.deleteInBackground();
+                        doListQuery();
                     }
                 });
-                doListQuery();
+
 
             default: return false;
         }
@@ -243,4 +240,19 @@ public class BookListActivity extends ActionBarActivity {
   public void doListQuery() {
       booksQueryAdapter.loadObjects();
   }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        doListQuery();
+        Log.v("TAG", "onResume() called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 }
+
+

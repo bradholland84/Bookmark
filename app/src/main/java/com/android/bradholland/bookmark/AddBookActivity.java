@@ -3,6 +3,7 @@ package com.android.bradholland.bookmark;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -37,6 +38,8 @@ public class AddBookActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.add_book_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
+        setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
        // title = intent.getParcelableExtra()

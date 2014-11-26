@@ -1,10 +1,11 @@
 package com.android.bradholland.bookmark;
 
+import android.support.v7.view.ActionMode;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -38,6 +39,9 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_detail_layout);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
+        setSupportActionBar(toolbar);
+
         Intent intent = getIntent();
         bookId = intent.getStringExtra("id");
         Log.v("TAGID", bookId);
@@ -62,55 +66,11 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 ratingBar.setRating((float)bookRating);
                 minutesReadTextView.setText("Minutes read: " + Integer.toString(minutes));
 
-                titleEditText.setFocusable(false);
-                descriptionEditText.setFocusable(false);
-                ratingBar.setFocusable(false);
-
-
-
-
-
                 android.support.v7.app.ActionBar ab = getSupportActionBar();
                 ab.setTitle(title);
             }
 
         });
-/*
-        final Button editBookButton = (Button) findViewById(R.id.btn_edit_book);
-        editBookButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //when the user chooses to edit the book
-                editFlag = true;
-                editBookButton.setText("Save Changes");
-                titleEditText.setFocusable(true);
-                titleEditText.setEnabled(false);
-                descriptionEditText.setFocusable(true);
-                descriptionEditText.setEnabled(false);
-                ratingBar.setFocusable(true);
-                ratingBar.setEnabled(false);
-
-                final Button SaveChanges = (Button)bookDetailActivity.this.findViewById(R.id.btn_edit_book);
-                SaveChanges.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //update characteristics of the book
-                        ParseQuery<Book> query = ParseQuery.getQuery("Books");
-                        query.getInBackground(bookId, new GetCallback<Book>() {
-                            @Override
-                            public void done(Book book, ParseException e) {
-                                book.put("title", titleEditText.getText().toString());
-                                book.put("description", descriptionEditText.getText().toString());
-                                book.put("rating", ratingBar.getNumStars());
-                                SaveChanges.setText("Edit Book");
-                            }
-                        });
-                    }
-                });
-
-            }
-        });
-*/
 
     }
     @Override
@@ -126,8 +86,17 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
         switch (item.getItemId()) {
             case R.id.action_edit_book:
                 // do edit stuff function here
-                //TODO fix this
-                mActionMode = startSupportActionMode(SupportActionMode.Callback);
+                titleEditText = (EditText) findViewById(R.id.et_title);
+                descriptionEditText = (EditText) findViewById(R.id.et_description);
+                ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
+                mActionMode = this.startSupportActionMode(this);
+                titleEditText.setFocusable(true);
+                titleEditText.setFocusableInTouchMode(true);
+                descriptionEditText.setFocusable(true);
+                descriptionEditText.setFocusableInTouchMode(true);
+                ratingBar.setFocusable(true);
+                ratingBar.setFocusableInTouchMode(true);
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -147,8 +116,18 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_book:
-                Toast.makeText(this, "Book Updated!", Toast.LENGTH_SHORT).show();
+                ParseQuery<Book> query = ParseQuery.getQuery("Books");
+                query.getInBackground(bookId, new GetCallback<Book>() {
+                    @Override
+                    public void done(Book book, ParseException e) {
+                        book.put("title", titleEditText.getText().toString());
+                        book.put("description", descriptionEditText.getText().toString());
+                        book.put("rating", ratingBar.getRating());
+                        book.saveInBackground();
+                    }
+                });
                 mode.finish(); // Action picked, so close the CAB
+                Toast.makeText(this, "Book Updated!", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return false;

@@ -5,6 +5,8 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <include layout="@layout/toolbar"/>
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,25 +17,22 @@
         android:layout_alignParentEnd="true"
         android:enabled="false" />
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/et_title"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="41dp" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/title"
         android:id="@+id/tv_title"
-        android:layout_alignParentTop="true"
+        android:paddingLeft="12dp"
+        android:layout_below="@+id/support_toolbar"/>
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/et_title"
+        android:layout_below="@+id/tv_title"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:paddingLeft="12dp" />
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="fill_parent"
