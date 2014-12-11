@@ -1,9 +1,10 @@
 package com.android.bradholland.bookmark;
 
-import android.support.v7.view.ActionMode;
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -15,7 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 
 /**
@@ -23,10 +27,12 @@ import com.parse.ParseQuery;
  */
 public class bookDetailActivity extends ActionBarActivity implements ActionMode.Callback {
     private boolean editFlag = false;
+    private ParseImageView coverPhoto;
     private EditText titleEditText;
     private EditText descriptionEditText;
     private TextView minutesReadTextView;
     private RatingBar ratingBar;
+    private ParseFile cover_file;
     private String title;
     private String bookId;
     private String description;
@@ -47,6 +53,9 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
         bookId = intent.getStringExtra("id");
         Log.v("TAGID", bookId);
 
+
+
+
         ParseQuery<Book> query = ParseQuery.getQuery("Books");
         query.whereEqualTo("objectId", bookId);
         query.getFirstInBackground(new GetCallback<Book>() {
@@ -62,12 +71,24 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
                 minutesReadTextView = (TextView) findViewById(R.id.tv_minutes);
 
+                coverPhoto = (ParseImageView) findViewById(R.id.iv_cover_photo);
+                ParseFile cover_file = book.getParseFile("coverPhoto");
+                if (cover_file != null) {
+                    coverPhoto.setParseFile(cover_file);
+                    cover_file.getDataInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] bytes, ParseException e) {
+                            Log.v("pic", "getdata callback okay?");
+                        }
+                    });
+                }
+
                 titleEditText.setText(title);
                 descriptionEditText.setText(description);
                 ratingBar.setRating((float)bookRating);
                 minutesReadTextView.setText("Minutes read: " + Integer.toString(minutes));
 
-                android.support.v7.app.ActionBar ab = getSupportActionBar();
+                ActionBar ab = getSupportActionBar();
                 ab.setTitle(title);
             }
 

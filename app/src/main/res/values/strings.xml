@@ -36,5 +36,6 @@
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="delete_book">Delete book</string>
     <string name="make_current_title">Make current title</string>
+    <string name="minutes_read">Minutes read</string>
 
 </resources>
