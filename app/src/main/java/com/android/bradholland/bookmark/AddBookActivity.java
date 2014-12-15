@@ -49,7 +49,7 @@ public class AddBookActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-       book = new Book();
+        book = new Book();
 
 
         coverPhoto = (ParseImageView) findViewById(R.id.iv_cover_photo);

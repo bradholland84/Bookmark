@@ -1,6 +1,5 @@
 package com.android.bradholland.bookmark;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -54,8 +54,6 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
         Log.v("TAGID", bookId);
 
 
-
-
         ParseQuery<Book> query = ParseQuery.getQuery("Books");
         query.whereEqualTo("objectId", bookId);
         query.getFirstInBackground(new GetCallback<Book>() {
@@ -79,6 +77,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                         @Override
                         public void done(byte[] bytes, ParseException e) {
                             Log.v("pic", "getdata callback okay?");
+                            coverPhoto.setVisibility(View.VISIBLE);
                         }
                     });
                 }
@@ -88,8 +87,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 ratingBar.setRating((float)bookRating);
                 minutesReadTextView.setText("Minutes read: " + Integer.toString(minutes));
 
-                ActionBar ab = getSupportActionBar();
-                ab.setTitle(title);
+                getSupportActionBar().setTitle(title);
             }
 
         });
