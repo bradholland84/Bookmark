@@ -60,8 +60,6 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
             @Override
             public void done(Book book, ParseException e) {
 
-
-
                 title = book.getTitle();
                 description = book.getDescription();
                 bookRating = book.getRating();
@@ -70,21 +68,23 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 titleEditText = (EditText) findViewById(R.id.et_title);
                 descriptionEditText = (EditText) findViewById(R.id.et_description);
                 ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
+                ratingBar.setIsIndicator(true);
                 minutesReadTextView = (TextView) findViewById(R.id.tv_minutes);
 
                 coverPhoto = (ParseImageView) findViewById(R.id.iv_cover_photo);
-                ParseFile cover_file = book.getParseFile("coverPhoto");
-                if (cover_file != null) {
-                    coverPhoto.setParseFile(cover_file);
-                    cover_file.getDataInBackground(new GetDataCallback() {
+                final ParseFile photoFile = book.getPhotoFile();
+                if (photoFile != null) {
+                    Log.v("pic", "file exists");
+                    coverPhoto.setParseFile(photoFile);
+                    coverPhoto.loadInBackground(new GetDataCallback() {
                         @Override
-                        public void done(byte[] bytes, ParseException e) {
-                            Log.v("pic", "getdata callback okay?");
+                        public void done(byte[] data, ParseException e) {
                             coverPhoto.setVisibility(View.VISIBLE);
                         }
                     });
+                } else {
+                    Log.v("pic", "file NULL, doesn't exist yet");
                 }
-
                 titleEditText.setText(title);
                 descriptionEditText.setText(description);
                 ratingBar.setRating((float)bookRating);
@@ -117,7 +117,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 titleEditText.setFocusableInTouchMode(true);
                 descriptionEditText.setFocusable(true);
                 descriptionEditText.setFocusableInTouchMode(true);
-                ratingBar.setFocusable(true);
+                ratingBar.setIsIndicator(false);
                 ratingBar.setFocusableInTouchMode(true);
 
                 return true;
@@ -149,6 +149,17 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                         book.saveInBackground();
                     }
                 });
+
+                titleEditText = (EditText) findViewById(R.id.et_title);
+                descriptionEditText = (EditText) findViewById(R.id.et_description);
+                ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
+                titleEditText.setFocusable(false);
+                titleEditText.setFocusableInTouchMode(false);
+                descriptionEditText.setFocusable(false);
+                descriptionEditText.setFocusableInTouchMode(false);
+                ratingBar.setIsIndicator(true);
+                ratingBar.setFocusableInTouchMode(false);
+
                 mode.finish(); // Action picked, so close the CAB
                 Toast.makeText(this, "Book Updated!", Toast.LENGTH_SHORT).show();
                 return true;

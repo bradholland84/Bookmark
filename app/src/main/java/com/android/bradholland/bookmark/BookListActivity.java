@@ -42,6 +42,7 @@ public class BookListActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("All books");
 
 
         //get current user config and store

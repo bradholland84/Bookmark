@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-        <color name="primary">#009688</color>
-        <color name="primary_pressed">#B2DFDB</color>
-        <color name="ripple">#ffd9ff3f</color>
+        <color name="primary">#43B8B8</color>
+        <color name="primary_pressed">#079090</color>
+        <color name="ripple">#ffe45e</color>
         <color name="accent">#FFCA28</color>
         <color name="accent_pressed">#FF8F00</color>
         <color name="black">#000000</color>
