@@ -106,4 +106,14 @@
         android:layout_alignRight="@+id/tv_minutes"
         android:layout_alignEnd="@+id/tv_minutes" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/cover_hint"
+        android:id="@+id/textView"
+        android:layout_below="@+id/iv_cover_photo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView" />
+        android:layout_toRightOf="@+id/iv_cover_photo"
+        android:layout_toEndOf="@+id/iv_cover_photo" />
 
     <TextView
         android:id="@+id/description_view"
@@ -25,20 +25,15 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@+id/title_view"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView" />
+        android:layout_toRightOf="@+id/iv_cover_photo"
+        android:layout_toEndOf="@+id/iv_cover_photo" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_alignParentTop="true"
+    <com.parse.ParseImageView
+        android:layout_width="64dp"
+        android:layout_height="96dp"
+        android:id="@+id/iv_cover_photo"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:paddingRight="12dp"
-        android:paddingBottom="12dp"
-        android:src="@drawable/library_icon_128"
-        android:paddingTop="12dp" />
+        android:paddingRight="8dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -46,8 +41,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/rating_view"
         android:layout_below="@+id/description_view"
-        android:layout_toRightOf="@+id/imageView"
-        android:layout_toEndOf="@+id/imageView"
+        android:layout_toRightOf="@+id/iv_cover_photo"
+        android:layout_toEndOf="@+id/iv_cover_photo"
         android:textColor="#ff2e7b6e" />
 
     <ImageButton

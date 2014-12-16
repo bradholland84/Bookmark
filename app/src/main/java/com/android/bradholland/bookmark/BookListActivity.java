@@ -2,6 +2,7 @@ package com.android.bradholland.bookmark;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +21,10 @@ import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
@@ -77,12 +81,29 @@ public class BookListActivity extends ActionBarActivity {
                     }
                 });
 
+                ParseImageView imageView = (ParseImageView) view.findViewById(R.id.iv_cover_photo);
                 TextView titleView = (TextView) view.findViewById(R.id.title_view);
                 TextView descriptionView = (TextView) view.findViewById(R.id.description_view);
                 TextView ratingView = (TextView) view.findViewById(R.id.rating_view);
+
+                Drawable d = getResources().getDrawable(R.drawable.library_icon_128);
+                imageView.setPlaceholder(d);
                 titleView.setText(book.getTitle());
                 descriptionView.setText(book.getDescription());
                 ratingView.setText("Your Rating: " + book.getRating());
+
+                ParseFile photoFile = book.getParseFile("coverPhoto");
+                if (photoFile != null) {
+                    imageView.setParseFile(photoFile);
+                    imageView.loadInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                            // nothing to do
+                        }
+                    });
+                } else {
+                    imageView.setPlaceholder(d);
+                }
 
                 return view;
             }

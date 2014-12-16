@@ -38,6 +38,7 @@ public class AddBookActivity extends ActionBarActivity {
     private RatingBar ratingBar;
     private Spinner minutesSpinner;
     private int minutes;
+    private boolean photoTaken;
     private float bookRating;
 
     @Override
@@ -146,6 +147,9 @@ public class AddBookActivity extends ActionBarActivity {
         acl.setPublicReadAccess(true);
         book.setACL(new ParseACL(ParseUser.getCurrentUser()));
 
+        if (!photoTaken) {
+
+        }
 
 
         // Save the book
@@ -163,7 +167,7 @@ public class AddBookActivity extends ActionBarActivity {
 
     private void updatePostButtonState () {
         int length = getTitleEditTextText().length();
-        boolean enabled = length > 0;
+        boolean enabled = length > 0 && photoTaken;
         saveBookButton.setEnabled(enabled);
     }
 
@@ -181,6 +185,8 @@ public class AddBookActivity extends ActionBarActivity {
     public void setParseCoverPhoto() {
         final ParseFile photoFile = getCurrentBook().getPhotoFile();
         if (photoFile != null) {
+            photoTaken = true;
+            updatePostButtonState();
             Log.v("pic", "file exists");
             coverPhoto.setParseFile(photoFile);
             coverPhoto.loadInBackground(new GetDataCallback() {
