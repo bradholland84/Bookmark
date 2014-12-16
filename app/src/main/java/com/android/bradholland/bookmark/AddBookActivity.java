@@ -102,7 +102,7 @@ public class AddBookActivity extends ActionBarActivity {
 
         minutesSpinner = (Spinner) findViewById(R.id.spn_minutes_spinner);
         final Integer[] items = new Integer[] {0, 5, 10, 20, 30, 40, 50, 60, 75, 90, 105, 125, 150, 180, 210, 250, 285, 300, 350, 400, 450, 500, 600, 700, 850, 1000};
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, items);
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
         minutesSpinner.setAdapter(adapter);
 
         minutesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -135,19 +135,18 @@ public class AddBookActivity extends ActionBarActivity {
         String description = descriptionEditText.getText().toString().trim();
         Log.v("TAGG", "minutes ====== > " + minutes);
 
-
-        // Set the book's data
-
         book.setTitle(title);
         book.setDescription(description);
         book.setUser(ParseUser.getCurrentUser());
         book.setRating(bookRating);
-        book.setWeeklyMinutes(minutes);
+        book.setTotalMinutes(minutes);
         ParseACL acl = new ParseACL();
 
         // Give public read access
         acl.setPublicReadAccess(true);
         book.setACL(new ParseACL(ParseUser.getCurrentUser()));
+
+
 
         // Save the book
         book.saveEventually(new SaveCallback() {

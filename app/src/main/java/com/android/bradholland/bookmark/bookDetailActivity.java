@@ -59,10 +59,13 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
         query.getFirstInBackground(new GetCallback<Book>() {
             @Override
             public void done(Book book, ParseException e) {
+
+
+
                 title = book.getTitle();
                 description = book.getDescription();
                 bookRating = book.getRating();
-                minutes = book.getWeeklyMinutes();
+                minutes = book.getTotalMinutes();
 
                 titleEditText = (EditText) findViewById(R.id.et_title);
                 descriptionEditText = (EditText) findViewById(R.id.et_description);

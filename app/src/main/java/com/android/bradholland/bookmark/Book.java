@@ -6,6 +6,8 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.joda.time.DateTime;
+
 /**
  * Created by Brad on 10/8/2014.
  */
@@ -17,20 +19,19 @@ public class Book extends ParseObject{
 
     }
 
+    public DateTime getCreatedAtDateTime() {
+        return new DateTime(this.getCreatedAt());
+    }
+
     public boolean isCurrentTitle() {
         return getBoolean("currentTitle");
     }
 
     public void setCurrentTitle(boolean isCurrentTitle) {
         put("currentTitle", isCurrentTitle);
-    }
-
-    public int getWeeklyMinutes() {
-        return getInt("weeklyMinutes");
-    }
-
-    public void setWeeklyMinutes(int value) {
-        put("weeklyMinutes", value);
+        if (isCurrentTitle) {
+            //TODO: make parse query here to set all other books as not current
+        }
     }
 
     public String getTitle() {
@@ -71,6 +72,38 @@ public class Book extends ParseObject{
 
     public void setPhotoFile(ParseFile file) {
         put("coverPhoto", file);
+    }
+
+    public int getDailyMinutes() {
+        return getInt("dailyMinutes");
+    }
+
+    public void setDailyMinutes(int value) {
+        put("dailyMinutes", value);
+    }
+
+    public int getWeeklyMinutes() {
+        return getInt("weeklyMinutes");
+    }
+
+    public void setWeeklyMinutes(int value) {
+        put("weeklyMinutes", value);
+    }
+
+    public int getMonthlyMinutes() {
+        return getInt("monthlyMinutes");
+    }
+
+    public void setMonthlyMinutes(int value) {
+        put("monthlyMinutes", value);
+    }
+
+    public int getTotalMinutes() {
+        return getInt("totalMinutes");
+    }
+
+    public void setTotalMinutes(int value) {
+        put("totalMinutes", value);
     }
 
     public static ParseQuery<Book> getQuery() {

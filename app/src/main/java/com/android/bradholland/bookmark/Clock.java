@@ -1,34 +1,25 @@
 package com.android.bradholland.bookmark;
 
-import com.parse.ParseClassName;
-import com.parse.ParseObject;
-
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 
 /**
  * Created by Brad on 12/15/2014.
+ * helper class to give books their time data
  */
 
-@ParseClassName("Clocks")
-public class Clock extends ParseObject {
-    private DateTime initDateTime;
 
+public class Clock {
 
-    //initial constructor
-    public Clock() {
-        initDateTime = new DateTime();
-    }
-
-    private Duration getDuration (DateTime initDateTime) {
+    public Duration getDuration (DateTime initialDateTime) {
         DateTime currentDateTime = new DateTime();
-        Interval interval = new Interval(initDateTime, currentDateTime);
+        Interval interval = new Interval(initialDateTime, currentDateTime);
         return interval.toDuration();
     }
 
-
-
-
+    private long minsDuration(Duration d) {
+        return d.getStandardMinutes();
+    }
 
 }
