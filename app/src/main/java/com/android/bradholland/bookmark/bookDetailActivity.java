@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -21,6 +22,9 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
+
+import org.joda.time.DateTime;
 
 /**
  * Created by Brad on 10/13/2014.
@@ -33,17 +37,26 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
     private TextView minutesReadTextView;
     private RatingBar ratingBar;
     private ParseFile cover_file;
+    private Button toggleReading;
     private String title;
     private String bookId;
     private String description;
     private double bookRating;
     private int minutes;
+    private DateTime sessionStart;
+    private Clock mClock;
+    private Book mBook;
+    private DateTime mBookMonthDateTime;
+    private DateTime mBookWeekDateTime;
     ActionMode mActionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_detail_layout);
+
+        mClock = new Clock();
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
@@ -59,7 +72,9 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
         query.getFirstInBackground(new GetCallback<Book>() {
             @Override
             public void done(Book book, ParseException e) {
-
+                mBook = book;
+                mBookMonthDateTime = new DateTime(mBook.getMonthDate());
+                mBookWeekDateTime = new DateTime (mBook.getWeekDate());
                 title = book.getTitle();
                 description = book.getDescription();
                 bookRating = book.getRating();
@@ -93,6 +108,67 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 getSupportActionBar().setTitle(title);
             }
 
+        });
+
+        if (mClock.monthPassed(mBookMonthDateTime)) {
+            //a month has passed since the date has been updated
+            mBook.setMonthlyMinutes(0);
+            DateTime dtNow = DateTime.now();
+            mBook.setMonthDate(dtNow);
+        }
+
+        if (mClock.weekPassed(mBookWeekDateTime)) {
+            //a week has passed since the date has been updated
+            mBook.setWeeklyMinutes(0);
+            DateTime dtNow = DateTime.now();
+            mBook.setWeekDate(dtNow);
+
+        }
+
+        // button used to start and stop reading session,
+        // ---->  will eventually start an activity showing a timer
+        // if that activity is left, reading session will pause
+        toggleReading = (Button) findViewById(R.id.btn_start_reading);
+        toggleReading.setTag(1);
+        toggleReading.setText("Start reading");
+        toggleReading.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final int status =(Integer) view.getTag();
+                if (status == 1) {
+                    sessionStart = new DateTime();
+                    toggleReading.setText("Stop reading");
+                    view.setTag(0);
+                } else {
+                    //user stops reading, time is added to the total minutes
+                    int minutesRead = mClock.sessionMinsTimeCalc(sessionStart);
+                    minutes += minutesRead;
+                    mBook.setTotalMinutes(minutes);
+
+                    //still in the current month
+                    int minsMonth = mBook.getMonthlyMinutes();
+                    minsMonth += minutesRead;
+                    mBook.setMonthlyMinutes(minsMonth);
+
+                    //still in the current week
+                    int minsWeek = mBook.getWeeklyMinutes();
+                    minsWeek += minutesRead;
+                    mBook.setWeeklyMinutes(minsWeek);
+
+                    //save book with updated times
+                    mBook.saveInBackground(new SaveCallback() {
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                // Saved successfully.
+                            } else {
+                                // The save failed.
+                            }
+                        }
+                    });
+                    toggleReading.setText("Start reading");
+                    view.setTag(1);
+                }
+            }
         });
 
     }

@@ -5,6 +5,8 @@ import com.parse.ParseUser;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
+import org.joda.time.Months;
+import org.joda.time.Weeks;
 
 /**
  * Created by Brad on 12/15/2014.
@@ -22,11 +24,32 @@ public class Clock {
     }
 
     // returns the length of this reading session in number of minutes
-    public int sessionTimeCalc(DateTime stampedDateTime) {
+    public int sessionMinsTimeCalc(DateTime stampedDateTime) {
         DateTime currentDateTime = new DateTime();
         Duration sessionTime = new Duration(stampedDateTime, currentDateTime);
         return sessionTime.toStandardMinutes().getMinutes();
     }
+
+
+    public boolean monthPassed(DateTime dt1) {
+        DateTime currentDateTime = new DateTime();
+        //TODO instant here is null, causes illegal argument exception
+        Months months = Months.monthsBetween(currentDateTime, dt1);
+        if (months.getMonths() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean weekPassed(DateTime dt1) {
+        DateTime currentDateTime = new DateTime();
+        Weeks weeks = Weeks.weeksBetween(currentDateTime, dt1);
+        if (weeks.getWeeks() > 0) {
+            return true;
+        }
+        return false;
+    }
+
 
     public void updateBookTimes(Book book, ParseUser user) {
         DateTime userCreatedAtDateTime = new DateTime(user.getCreatedAt());
@@ -38,7 +61,8 @@ public class Clock {
         Duration userBookCreatedGap = new Duration(
                 userCreatedAtDateTime, bookCreatedAtDateTime);
 
-        //duration representing how long it has been
+        // duration representing how long it has been since the book was
+        // created and the current moment
         Duration sinceCreated = new Duration(
                 bookCreatedAtDateTime, currentDateTime);
 

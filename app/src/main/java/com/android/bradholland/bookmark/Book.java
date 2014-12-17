@@ -8,6 +8,8 @@ import com.parse.ParseUser;
 
 import org.joda.time.DateTime;
 
+import java.util.Date;
+
 /**
  * Created by Brad on 10/8/2014.
  */
@@ -17,6 +19,22 @@ public class Book extends ParseObject{
 
     public Book() {
 
+    }
+
+    public Date getMonthDate() {
+        return getDate("monthDate");
+    }
+
+    public void setMonthDate(DateTime dt) {
+        put("monthDate", dt.toDate());
+    }
+
+    public Date getWeekDate() {
+        return getDate("weekDate");
+    }
+
+    public void setWeekDate(DateTime dt) {
+        put("weekDate", dt.toDate());
     }
 
     public DateTime getCreatedAtDateTime() {
@@ -72,14 +90,6 @@ public class Book extends ParseObject{
 
     public void setPhotoFile(ParseFile file) {
         put("coverPhoto", file);
-    }
-
-    public int getDailyMinutes() {
-        return getInt("dailyMinutes");
-    }
-
-    public void setDailyMinutes(int value) {
-        put("dailyMinutes", value);
     }
 
     public int getWeeklyMinutes() {

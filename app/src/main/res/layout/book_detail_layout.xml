@@ -94,4 +94,13 @@
         android:layout_below="@+id/tv_minutes"
         android:layout_alignParentLeft="true"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start_reading"
+        android:id="@+id/btn_start_reading"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

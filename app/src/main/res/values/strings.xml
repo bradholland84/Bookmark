@@ -38,5 +38,6 @@
     <string name="make_current_title">Make current title</string>
     <string name="minutes_read">Minutes read</string>
     <string name="cover_hint">Press to take a photo of your book cover!</string>
+    <string name="start_reading">Start reading</string>
 
 </resources>

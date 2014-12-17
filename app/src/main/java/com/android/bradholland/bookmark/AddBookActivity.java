@@ -25,6 +25,8 @@ import com.parse.ParseImageView;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.joda.time.DateTime;
+
 /**
  * Created by Brad on 10/10/2014.
  */
@@ -141,6 +143,11 @@ public class AddBookActivity extends ActionBarActivity {
         book.setUser(ParseUser.getCurrentUser());
         book.setRating(bookRating);
         book.setTotalMinutes(minutes);
+        book.setWeeklyMinutes(minutes);
+        book.setMonthlyMinutes(minutes);
+        DateTime bookCreatedAtDateTime = new DateTime(book.getCreatedAt());
+        book.setMonthDate(bookCreatedAtDateTime);
+        book.setWeekDate(bookCreatedAtDateTime);
         ParseACL acl = new ParseACL();
 
         // Give public read access
