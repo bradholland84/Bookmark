@@ -1,6 +1,6 @@
 package com.android.bradholland.bookmark;
 
-import com.parse.ParseUser;
+import android.util.Log;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -33,9 +33,12 @@ public class Clock {
 
     public boolean monthPassed(DateTime dt1) {
         DateTime currentDateTime = new DateTime();
-        //TODO instant here is null, causes illegal argument exception
+        Log.v("instant", "current date/time is: " + currentDateTime.toString());
+        Log.v("instant", "DT1 date/time is: " + dt1.toString());
+
         Months months = Months.monthsBetween(currentDateTime, dt1);
-        if (months.getMonths() > 0) {
+        Log.v("instant", "number of months between = " + months.getMonths());
+        if (months.getMonths() < 0) {
             return true;
         }
         return false;
@@ -44,29 +47,10 @@ public class Clock {
     public boolean weekPassed(DateTime dt1) {
         DateTime currentDateTime = new DateTime();
         Weeks weeks = Weeks.weeksBetween(currentDateTime, dt1);
-        if (weeks.getWeeks() > 0) {
+        if (weeks.getWeeks() < 0) {
             return true;
         }
         return false;
-    }
-
-
-    public void updateBookTimes(Book book, ParseUser user) {
-        DateTime userCreatedAtDateTime = new DateTime(user.getCreatedAt());
-        DateTime bookCreatedAtDateTime = new DateTime(book.getCreatedAt());
-        DateTime currentDateTime = new DateTime();
-
-        // duration of time representing the time between when the user signed up
-        // and when they first created this book
-        Duration userBookCreatedGap = new Duration(
-                userCreatedAtDateTime, bookCreatedAtDateTime);
-
-        // duration representing how long it has been since the book was
-        // created and the current moment
-        Duration sinceCreated = new Duration(
-                bookCreatedAtDateTime, currentDateTime);
-
-
     }
 
 }

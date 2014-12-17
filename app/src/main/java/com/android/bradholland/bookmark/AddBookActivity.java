@@ -148,6 +148,9 @@ public class AddBookActivity extends ActionBarActivity {
         DateTime bookCreatedAtDateTime = new DateTime(book.getCreatedAt());
         book.setMonthDate(bookCreatedAtDateTime);
         book.setWeekDate(bookCreatedAtDateTime);
+        //book.add("monthMinutesHistory", 0);
+        //book.add("weekMinutesHistory", 0);
+
         ParseACL acl = new ParseACL();
 
         // Give public read access

@@ -25,6 +25,8 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+import org.json.JSONArray;
 
 /**
  * Created by Brad on 10/13/2014.
@@ -36,7 +38,6 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
     private EditText descriptionEditText;
     private TextView minutesReadTextView;
     private RatingBar ratingBar;
-    private ParseFile cover_file;
     private Button toggleReading;
     private String title;
     private String bookId;
@@ -48,6 +49,8 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
     private Book mBook;
     private DateTime mBookMonthDateTime;
     private DateTime mBookWeekDateTime;
+    private JSONArray monthMinutesHistory;
+    private JSONArray weekMinutesHistory;
     ActionMode mActionMode;
 
     @Override
@@ -75,10 +78,13 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 mBook = book;
                 mBookMonthDateTime = new DateTime(mBook.getMonthDate());
                 mBookWeekDateTime = new DateTime (mBook.getWeekDate());
+                Log.v("time", "current month time is =" + mBookMonthDateTime.toString());
                 title = book.getTitle();
                 description = book.getDescription();
                 bookRating = book.getRating();
                 minutes = book.getTotalMinutes();
+                monthMinutesHistory = book.getMonthMinutesHistory();
+                weekMinutesHistory = book.getWeekMinutesHistory();
 
                 titleEditText = (EditText) findViewById(R.id.et_title);
                 descriptionEditText = (EditText) findViewById(R.id.et_description);
@@ -106,24 +112,39 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 minutesReadTextView.setText("Minutes read: " + Integer.toString(minutes));
 
                 getSupportActionBar().setTitle(title);
+
+                if (mClock.monthPassed(mBookMonthDateTime)) {
+                    //a month has passed since the date has been updated
+                    Log.v("time", "A month has passed");
+                    if (monthMinutesHistory == null) {
+                        Log.v("null", "monthMinutesHistory is a NULL VALUE");
+                    }
+                    mBook.add("monthMinutesHistory", mBook.getMonthlyMinutes());
+                    mBook.setMonthlyMinutes(0);
+                    int dayOfMonth = mBookMonthDateTime.getDayOfMonth();
+                    DateTime dtNow = DateTime.now();
+                    DateTime fixedDt =  dtNow.withField(DateTimeFieldType.dayOfMonth(), dayOfMonth);
+                    mBook.setMonthDate(fixedDt);
+                    mBook.saveEventually();
+                } else {
+                    Log.v("time", "A month has NOT passed");
+                }
+
+                if (mClock.weekPassed(mBookWeekDateTime)) {
+                    //a week has passed since the date has been updated
+                    Log.v("time", "A week has passed");
+                    mBook.add("weekMinutesHistory", mBook.getWeeklyMinutes());
+                    mBook.setWeeklyMinutes(0);
+                    int dayOfWeek = mBookWeekDateTime.getDayOfWeek();
+                    DateTime dtNow = DateTime.now();
+                    DateTime fixedDt = dtNow.withField(DateTimeFieldType.dayOfWeek(), dayOfWeek);
+                    mBook.setWeekDate(fixedDt);
+                    mBook.saveEventually();
+                } else {
+                    Log.v("time", "A week has NOT passed");
+                }
             }
-
         });
-
-        if (mClock.monthPassed(mBookMonthDateTime)) {
-            //a month has passed since the date has been updated
-            mBook.setMonthlyMinutes(0);
-            DateTime dtNow = DateTime.now();
-            mBook.setMonthDate(dtNow);
-        }
-
-        if (mClock.weekPassed(mBookWeekDateTime)) {
-            //a week has passed since the date has been updated
-            mBook.setWeeklyMinutes(0);
-            DateTime dtNow = DateTime.now();
-            mBook.setWeekDate(dtNow);
-
-        }
 
         // button used to start and stop reading session,
         // ---->  will eventually start an activity showing a timer

@@ -7,6 +7,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 
 import java.util.Date;
 
@@ -19,6 +20,22 @@ public class Book extends ParseObject{
 
     public Book() {
 
+    }
+
+    public JSONArray getMonthMinutesHistory() {
+        return getJSONArray("monthMinutesHistory");
+    }
+
+    public void addMonthMinutesHistory(JSONArray value) {
+        add("monthMinutesHistory", value);
+    }
+
+    public JSONArray getWeekMinutesHistory() {
+        return getJSONArray("weekMinutesHistory");
+    }
+
+    public void addWeekMinutesHistory(JSONArray value) {
+        add("weekMinutesHistory", value);
     }
 
     public Date getMonthDate() {
