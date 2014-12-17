@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.bradholland.bookmark.R;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -103,6 +102,7 @@ public class SignUpActivity extends Activity {
         ParseUser user = new ParseUser();
         user.setUsername(username);
         user.setPassword(password);
+
 
         // Call the Parse signup method
         user.signUpInBackground(new SignUpCallback() {
