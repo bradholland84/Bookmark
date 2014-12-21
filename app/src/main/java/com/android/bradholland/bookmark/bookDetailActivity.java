@@ -71,6 +71,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
 
 
         ParseQuery<Book> query = ParseQuery.getQuery("Books");
+        query.fromLocalDatastore();
         query.whereEqualTo("objectId", bookId);
         query.getFirstInBackground(new GetCallback<Book>() {
             @Override
