@@ -243,7 +243,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                         book.put("title", titleEditText.getText().toString());
                         book.put("description", descriptionEditText.getText().toString());
                         book.put("rating", ratingBar.getRating());
-                        book.saveInBackground();
+                        book.saveEventually();
                     }
                 });
 

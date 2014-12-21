@@ -163,6 +163,7 @@ public class AddBookActivity extends ActionBarActivity {
 
 
         // Save the book
+        book.pinInBackground();
         book.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {

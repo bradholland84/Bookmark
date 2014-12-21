@@ -20,6 +20,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -48,6 +51,19 @@ public class BookListActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("All books");
 
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .showImageOnLoading(R.drawable.library_icon_128)
+                .cacheInMemory(true)
+                .build();
+
+        //Create a config with those options.
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .defaultDisplayImageOptions(options)
+                .build();
+
+        ImageLoader.getInstance().init(config);
+
+
 
         //get current user config and store
         final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -60,6 +76,7 @@ public class BookListActivity extends ActionBarActivity {
             new ParseQueryAdapter.QueryFactory<Book>() {
                 public ParseQuery<Book> create() {
                     ParseQuery query = new ParseQuery("Books");
+                    query.fromLocalDatastore();
                     query.whereEqualTo("user", currentUser);
                     query.orderByDescending("createdAt");
                     return query;
@@ -102,7 +119,7 @@ public class BookListActivity extends ActionBarActivity {
                         }
                     });
                 } else {
-                    imageView.setPlaceholder(d);
+                    imageView.setImageDrawable(d);
                 }
 
                 return view;
