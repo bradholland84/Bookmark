@@ -14,15 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -51,20 +46,6 @@ public class BookListActivity extends ActionBarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("All books");
 
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.library_icon_128)
-                .cacheInMemory(true)
-                .build();
-
-        //Create a config with those options.
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
-                .defaultDisplayImageOptions(options)
-                .build();
-
-        ImageLoader.getInstance().init(config);
-
-
-
         //get current user config and store
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
@@ -90,13 +71,6 @@ public class BookListActivity extends ActionBarActivity {
                 if (view == null) {
                     view = View.inflate(getContext(), R.layout.book_item, null);
                 }
-                ImageButton overflowButton = (ImageButton) view.findViewById(R.id.ib_overflow_button);
-                overflowButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showMenu(v);
-                    }
-                });
 
                 ParseImageView imageView = (ParseImageView) view.findViewById(R.id.iv_cover_photo);
                 TextView titleView = (TextView) view.findViewById(R.id.title_view);
@@ -109,7 +83,7 @@ public class BookListActivity extends ActionBarActivity {
                 descriptionView.setText(book.getDescription());
                 ratingView.setText("Your Rating: " + book.getRating());
 
-                ParseFile photoFile = book.getParseFile("coverPhoto");
+                ParseFile photoFile = book.getParseFile("coverPhotoThumbnail");
                 if (photoFile != null) {
                     imageView.setParseFile(photoFile);
                     imageView.loadInBackground(new GetDataCallback() {
@@ -208,25 +182,6 @@ public class BookListActivity extends ActionBarActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-  public void showMenu(View v) {
-      PopupMenu popup = new PopupMenu(this, v);
-      popup.getMenuInflater().inflate(R.menu.booklist_item_overflow, popup.getMenu());
-      popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-          @Override
-          public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.make_current_title:
-                        //book.setCurrentTitle(true);
-                    case R.id.delete_book:
-                        //book.delete();
-                    default: return false;
-                }
-          }
-      });
-    popup.show();
-  }
-
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {

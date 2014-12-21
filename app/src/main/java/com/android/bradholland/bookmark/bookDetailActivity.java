@@ -237,6 +237,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
         switch (item.getItemId()) {
             case R.id.action_save_book:
                 ParseQuery<Book> query = ParseQuery.getQuery("Books");
+                query.fromLocalDatastore();
                 query.getInBackground(bookId, new GetCallback<Book>() {
                     @Override
                     public void done(Book book, ParseException e) {
