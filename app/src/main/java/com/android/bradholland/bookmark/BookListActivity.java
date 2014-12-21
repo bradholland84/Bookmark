@@ -33,6 +33,7 @@ import java.util.List;
 public class BookListActivity extends ActionBarActivity {
 
     private ParseQueryAdapter<Book> booksQueryAdapter;
+    private ListView booksListView;
     private String selectedBookObjectId;
     private String contextBookId;
 
@@ -50,7 +51,6 @@ public class BookListActivity extends ActionBarActivity {
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
         //set up book query
-        //doListQuery();
 
         //constructs an adapter to apply queried books' data into the listview
         ParseQueryAdapter.QueryFactory<Book> factory =
@@ -120,13 +120,13 @@ public class BookListActivity extends ActionBarActivity {
         });
 
         // attach query adapter to view
-        ListView books_listview = (ListView) findViewById(R.id.books_listview);
-        books_listview.setAdapter(booksQueryAdapter);
-        registerForContextMenu(books_listview);
+       booksListView = (ListView) findViewById(R.id.books_listview);
+        booksListView.setAdapter(booksQueryAdapter);
+        registerForContextMenu(booksListView);
 
         //floating action button declaration for awesome material design type button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_add_book);
-        fab.attachToListView(books_listview);
+        fab.attachToListView(booksListView);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +138,7 @@ public class BookListActivity extends ActionBarActivity {
 
 
         // set up click listener for book items
-        books_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        booksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Book item = booksQueryAdapter.getItem(position);
@@ -219,13 +219,16 @@ public class BookListActivity extends ActionBarActivity {
             case R.id.delete_book:
                 Log.v("context menu", "Book should be deleted!");
                 ParseQuery<Book> deleteQuery = ParseQuery.getQuery("Books");
+                deleteQuery.fromLocalDatastore();
                 deleteQuery.getInBackground(contextBookId, new GetCallback<Book>() {
                     @Override
                     public void done(Book book, ParseException e) {
+                        book.unpinInBackground();
                         book.deleteInBackground();
                         doListQuery();
                     }
                 });
+
 
 
             default: return false;
