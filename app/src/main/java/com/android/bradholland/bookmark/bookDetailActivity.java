@@ -178,7 +178,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                     mBook.setWeeklyMinutes(minsWeek);
 
                     //save book with updated times
-                    mBook.saveInBackground(new SaveCallback() {
+                    mBook.saveEventually(new SaveCallback() {
                         public void done(ParseException e) {
                             if (e == null) {
                                 // Saved successfully.
