@@ -39,5 +39,6 @@
     <string name="minutes_read">Minutes read</string>
     <string name="cover_hint">Press to take a photo of your book cover!</string>
     <string name="start_reading">Start reading</string>
+    <string name="title_activity_graph">GraphActivity</string>
 
 </resources>
