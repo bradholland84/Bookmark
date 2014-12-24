@@ -23,6 +23,7 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
@@ -50,8 +51,6 @@ public class BookListActivity extends ActionBarActivity {
         //get current user config and store
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
-        //set up book query
-
         //constructs an adapter to apply queried books' data into the listview
         ParseQueryAdapter.QueryFactory<Book> factory =
             new ParseQueryAdapter.QueryFactory<Book>() {
@@ -64,65 +63,28 @@ public class BookListActivity extends ActionBarActivity {
             }
         };
 
-        booksQueryAdapter = new ParseQueryAdapter<Book>(this, factory) {
-
-            @Override
-            public View getItemView(Book book, View view, ViewGroup parent) {
-                if (view == null) {
-                    view = View.inflate(getContext(), R.layout.book_item, null);
-                }
-
-                ParseImageView imageView = (ParseImageView) view.findViewById(R.id.iv_cover_photo);
-                TextView titleView = (TextView) view.findViewById(R.id.title_view);
-                TextView descriptionView = (TextView) view.findViewById(R.id.description_view);
-                TextView ratingView = (TextView) view.findViewById(R.id.rating_view);
-
-                Drawable d = getResources().getDrawable(R.drawable.library_icon_128);
-                imageView.setPlaceholder(d);
-                titleView.setText(book.getTitle());
-                descriptionView.setText(book.getDescription());
-                ratingView.setText("Your Rating: " + book.getRating());
-
-                ParseFile photoFile = book.getParseFile("coverPhotoThumbnail");
-                if (photoFile != null) {
-                    imageView.setParseFile(photoFile);
-                    imageView.loadInBackground(new GetDataCallback() {
-                        @Override
-                        public void done(byte[] data, ParseException e) {
-                            // nothing to do
-                        }
-                    });
-                } else {
-                    imageView.setImageDrawable(d);
-                }
-
-                return view;
-            }
-        };
-
-        booksQueryAdapter.setTextKey("title");
-        booksQueryAdapter.setTextKey("description");
-        booksQueryAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Book>() {
-            ProgressDialog progress = new ProgressDialog(BookListActivity.this);
-            @Override
-            public void onLoading() {
-                Log.v("TAG", "ON LOADING CALLED");
-                progress.setTitle("Loading your books");
-                progress.setMessage("Please wait...");
-                progress.show();
-            }
-
-            @Override
-            public void onLoaded(List<Book> books, Exception e) {
-                Log.v("TAG", "ON LOADED CALLED");
-                progress.dismiss();
-            }
-        });
+        adapt(factory);
 
         // attach query adapter to view
        booksListView = (ListView) findViewById(R.id.books_listview);
         booksListView.setAdapter(booksQueryAdapter);
         registerForContextMenu(booksListView);
+
+        // usually when the user logs in on this device for the first time and has
+        // not created any book objects (none are pinned in the background)
+        if (booksQueryAdapter.getCount() == 0) {
+            ParseQueryAdapter.QueryFactory<Book> onlineFactory =
+                    new ParseQueryAdapter.QueryFactory<Book>() {
+                        public ParseQuery<Book> create() {
+                            ParseQuery query = new ParseQuery("Books");
+                            query.whereEqualTo("user", currentUser);
+                            query.orderByDescending("createdAt");
+                            return query;
+                        }
+                    };
+            adapt(onlineFactory);
+            booksListView.setAdapter(booksQueryAdapter);
+        }
 
         //floating action button declaration for awesome material design type button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_add_book);
@@ -234,6 +196,63 @@ public class BookListActivity extends ActionBarActivity {
             default: return false;
         }
     }
+
+
+  public void adapt(ParseQueryAdapter.QueryFactory factory) {
+      booksQueryAdapter = new ParseQueryAdapter<Book>(this, factory) {
+          @Override
+          public View getItemView(Book book, View view, ViewGroup parent) {
+              if (view == null) {
+                  view = View.inflate(getContext(), R.layout.book_item, null);
+              }
+              ParseImageView imageView = (ParseImageView) view.findViewById(R.id.iv_cover_photo);
+              TextView titleView = (TextView) view.findViewById(R.id.title_view);
+              TextView descriptionView = (TextView) view.findViewById(R.id.description_view);
+              TextView ratingView = (TextView) view.findViewById(R.id.rating_view);
+
+              Drawable d = getResources().getDrawable(R.drawable.library_icon_128);
+              imageView.setPlaceholder(d);
+              titleView.setText(book.getTitle());
+              descriptionView.setText(book.getDescription());
+              ratingView.setText("Your Rating: " + book.getRating());
+
+              ParseFile photoFile = book.getParseFile("coverPhotoThumbnail");
+              if (photoFile != null) {
+                  imageView.setParseFile(photoFile);
+                  imageView.loadInBackground(new GetDataCallback() {
+                      @Override
+                      public void done(byte[] data, ParseException e) {
+                          // nothing to do
+                      }
+                  });
+              } else {
+                  // stock placeholder if no cover photo
+                  imageView.setImageDrawable(d);
+              }
+
+              //inflate child view in listview
+              return view;
+          }
+      };
+
+      booksQueryAdapter.setTextKey("title");
+      booksQueryAdapter.setTextKey("description");
+      booksQueryAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Book>() {
+          ProgressDialog progress = new ProgressDialog(BookListActivity.this);
+          @Override
+          public void onLoading() {
+              progress.setTitle("Loading your books");
+              progress.setMessage("Please wait...");
+              progress.show();
+          }
+
+          @Override
+          public void onLoaded(List<Book> books, Exception e) {
+              progress.dismiss();
+              ParseObject.pinAllInBackground(books);
+          }
+      });
+  }
 
 
   public void doListQuery() {

@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.github.mikephil.charting.charts.BarChart;
+//import com.github.mikephil.charting.charts.BarChart;
 
 
 public class GraphActivity extends ActionBarActivity {
@@ -15,9 +15,9 @@ public class GraphActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
-        BarChart barChart = (BarChart) findViewById(R.id.bar_chart_1);
-        barChart.setDescription("Your reading data for this book over time");
-        barChart.setTouchEnabled(true);
+       // BarChart barChart = (BarChart) findViewById(R.id.bar_chart_1);
+       // barChart.setDescription("Your reading data for this book over time");
+       // barChart.setTouchEnabled(true);
 
 
 
