@@ -29,6 +29,15 @@ public class DashboardActivity extends ActionBarActivity {
             }
         });
 
+        Button statsButton = (Button) findViewById(R.id.btn_stats_button);
+        statsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(DashboardActivity.this, GraphActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
 

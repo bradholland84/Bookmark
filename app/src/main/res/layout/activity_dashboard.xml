@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View your stats"
-        android:id="@+id/button"
+        android:id="@+id/btn_stats_button"
         android:layout_above="@+id/btn_title_list_intent"
         android:layout_alignRight="@+id/btn_title_list_intent"
         android:layout_alignEnd="@+id/btn_title_list_intent" />
