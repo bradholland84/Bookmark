@@ -27,6 +27,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
+import com.r0adkll.slidr.Slidr;
 
 import java.util.List;
 
@@ -37,11 +38,13 @@ public class BookListActivity extends ActionBarActivity {
     private ListView booksListView;
     private String selectedBookObjectId;
     private String contextBookId;
+    public static final int DATA_CHANGED_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_book);
+        Slidr.attach(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
@@ -109,10 +112,21 @@ public class BookListActivity extends ActionBarActivity {
 
                 Intent intent = new Intent(BookListActivity.this, bookDetailActivity.class);
                 intent.putExtra("id", selectedBookObjectId);
-                startActivity(intent);
+                startActivityForResult(intent, DATA_CHANGED_REQUEST);
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v("act", "result method called");
+        if (requestCode == DATA_CHANGED_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Log.v("act", "result code OK");
+                doListQuery();
+            }
+        }
     }
 
     @Override
@@ -198,6 +212,7 @@ public class BookListActivity extends ActionBarActivity {
     }
 
 
+
   public void adapt(ParseQueryAdapter.QueryFactory factory) {
       booksQueryAdapter = new ParseQueryAdapter<Book>(this, factory) {
           @Override
@@ -263,7 +278,6 @@ public class BookListActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        doListQuery();
         Log.v("TAG", "onResume() called");
     }
 

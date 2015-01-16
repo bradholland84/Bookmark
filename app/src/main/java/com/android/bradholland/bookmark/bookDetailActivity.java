@@ -23,6 +23,7 @@ import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.r0adkll.slidr.Slidr;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
@@ -57,8 +58,9 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_detail_layout);
-
+        Slidr.attach(this);
         mClock = new Clock();
+        editFlag = false;
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
@@ -258,9 +260,12 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 descriptionEditText.setFocusableInTouchMode(false);
                 ratingBar.setIsIndicator(true);
                 ratingBar.setFocusableInTouchMode(false);
-
+                editFlag = true;
                 mode.finish(); // Action picked, so close the CAB
                 Toast.makeText(this, "Book Updated!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
+                finish();
                 return true;
             default:
                 return false;
@@ -276,4 +281,6 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
     public void onDestroyActionMode(ActionMode mode) {
         mActionMode = null;
     }
+
+
 }
