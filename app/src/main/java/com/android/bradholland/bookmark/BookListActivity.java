@@ -97,7 +97,7 @@ public class BookListActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(BookListActivity.this, AddBookActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, DATA_CHANGED_REQUEST);
             }
         });
 

@@ -3,6 +3,7 @@ package com.android.bradholland.bookmark;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -167,6 +168,8 @@ public class AddBookActivity extends ActionBarActivity {
         book.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
