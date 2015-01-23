@@ -68,7 +68,7 @@
             android:label="@string/title_activity_dashboard" >
         </activity>
         <activity
-            android:name=".GraphActivity"
+            android:name=".StatsActivity"
             android:label="@string/title_activity_graph" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

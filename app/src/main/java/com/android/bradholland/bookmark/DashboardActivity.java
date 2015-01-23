@@ -33,7 +33,7 @@ public class DashboardActivity extends ActionBarActivity {
         statsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DashboardActivity.this, GraphActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, StatsActivity.class);
                 startActivity(intent);
             }
         });
