@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 public class MonthlyStatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v =inflater.inflate(R.layout.tab_monthly,container,false);
-        return v;
+        return inflater.inflate(R.layout.tab_monthly,container,false);
     }
 }

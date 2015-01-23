@@ -1,6 +1,5 @@
 package com.android.bradholland.bookmark;
 
-
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -13,12 +12,12 @@ public class StatsActivity extends ActionBarActivity {
 
     // Declaring Your View and Variables
 
-    Toolbar toolbar;
-    ViewPager pager;
-    ViewPagerAdapter adapter;
-    SlidingTabLayout tabs;
-    CharSequence Titles[]={"Weekly","Monthly"};
-    int Numboftabs =2;
+    private Toolbar toolbar;
+    private ViewPager pager;
+    private ViewPagerAdapter adapter;
+    private SlidingTabLayout tabs;
+    private CharSequence Titles[]={"Weekly","Monthly"};
+    private int Numboftabs =2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +29,8 @@ public class StatsActivity extends ActionBarActivity {
 
         toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Your Stats");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
@@ -53,8 +54,6 @@ public class StatsActivity extends ActionBarActivity {
 
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
-
-
 
     }
 
