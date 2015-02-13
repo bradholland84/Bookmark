@@ -1,5 +1,6 @@
 package com.android.bradholland.bookmark;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -16,23 +17,22 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 import com.r0adkll.slidr.Slidr;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeFieldType;
 import org.json.JSONArray;
 
 /**
  * Created by Brad on 10/13/2014.
  */
-public class bookDetailActivity extends ActionBarActivity implements ActionMode.Callback {
+public class bookDetailActivity extends ActionBarActivity implements ActionMode.Callback, LogDialogFragment.LogDialogListener {
     private boolean editFlag = false;
     private ParseImageView coverPhoto;
     private EditText titleEditText;
@@ -80,7 +80,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
             public void done(Book book, ParseException e) {
                 mBook = book;
                 mBookMonthDateTime = new DateTime(mBook.getMonthDate());
-                mBookWeekDateTime = new DateTime (mBook.getWeekDate());
+                mBookWeekDateTime = new DateTime(mBook.getWeekDate());
                 Log.v("time", "current month time is =" + mBookMonthDateTime.toString());
                 title = book.getTitle();
                 description = book.getDescription();
@@ -111,89 +111,22 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
                 }
                 titleEditText.setText(title);
                 descriptionEditText.setText(description);
-                ratingBar.setRating((float)bookRating);
+                ratingBar.setRating((float) bookRating);
                 minutesReadTextView.setText("Minutes read: " + Integer.toString(minutes));
 
                 getSupportActionBar().setTitle(title);
-
-                if (mClock.monthPassed(mBookMonthDateTime)) {
-                    //a month has passed since the date has been updated
-                    Log.v("time", "A month has passed");
-                    if (monthMinutesHistory == null) {
-                        Log.v("null", "monthMinutesHistory is a NULL VALUE");
-                    }
-                    mBook.add("monthMinutesHistory", mBook.getMonthlyMinutes());
-                    mBook.setMonthlyMinutes(0);
-                    int dayOfMonth = mBookMonthDateTime.getDayOfMonth();
-                    DateTime dtNow = DateTime.now();
-                    DateTime fixedDt =  dtNow.withField(DateTimeFieldType.dayOfMonth(), dayOfMonth);
-                    mBook.setMonthDate(fixedDt);
-                    mBook.saveEventually();
-                } else {
-                    Log.v("time", "A month has NOT passed");
-                }
-
-                if (mClock.weekPassed(mBookWeekDateTime)) {
-                    //a week has passed since the date has been updated
-                    Log.v("time", "A week has passed");
-                    mBook.add("weekMinutesHistory", mBook.getWeeklyMinutes());
-                    mBook.setWeeklyMinutes(0);
-                    int dayOfWeek = mBookWeekDateTime.getDayOfWeek();
-                    DateTime dtNow = DateTime.now();
-                    DateTime fixedDt = dtNow.withField(DateTimeFieldType.dayOfWeek(), dayOfWeek);
-                    mBook.setWeekDate(fixedDt);
-                    mBook.saveEventually();
-                } else {
-                    Log.v("time", "A week has NOT passed");
-                }
             }
         });
 
-        // button used to start and stop reading session,
-        // ---->  will eventually start an activity showing a timer
-        // if that activity is left, reading session will pause
-        toggleReading = (Button) findViewById(R.id.btn_start_reading);
-        toggleReading.setTag(1);
-        toggleReading.setText("Start reading");
-        toggleReading.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_add_log);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final int status =(Integer) view.getTag();
-                if (status == 1) {
-                    sessionStart = new DateTime();
-                    toggleReading.setText("Stop reading");
-                    view.setTag(0);
-                } else {
-                    //user stops reading, time is added to the total minutes
-                    int minutesRead = mClock.sessionMinsTimeCalc(sessionStart);
-                    minutes += minutesRead;
-                    mBook.setTotalMinutes(minutes);
-
-                    //still in the current month
-                    int minsMonth = mBook.getMonthlyMinutes();
-                    minsMonth += minutesRead;
-                    mBook.setMonthlyMinutes(minsMonth);
-
-                    //still in the current week
-                    int minsWeek = mBook.getWeeklyMinutes();
-                    minsWeek += minutesRead;
-                    mBook.setWeeklyMinutes(minsWeek);
-
-                    //save book with updated times
-                    mBook.saveEventually(new SaveCallback() {
-                        public void done(ParseException e) {
-                            if (e == null) {
-                                // Saved successfully.
-                            } else {
-                                // The save failed.
-                            }
-                        }
-                    });
-                    toggleReading.setText("Start reading");
-                    view.setTag(1);
-                }
+                // TODO: dialogue to create new log goes here
             }
         });
+
+
 
     }
     @Override
@@ -270,6 +203,19 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
             default:
                 return false;
         }
+    }
+
+    public void showLogDialog() {
+        DialogFragment dialog = new LogDialogFragment();
+        dialog.show(getSupportFragmentManager(), "LogDialogFragment");
+    }
+
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        //TODO: user pressed positive button...
+    }
+
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        //TODO: user pressed negative button...
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.android.bradholland.bookmark;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,7 @@ public class StatsFragment extends Fragment {
     private int currentMins;
     private BarChart allTitlesBarChart;
     private String title;
+    private TextView allTitles;
     private TextView currentTitle;
     private JSONArray minutesHistory;
 
@@ -44,7 +46,6 @@ public class StatsFragment extends Fragment {
 
     @Override
     public void onAttach(Activity activity) {
-
         super.onAttach(activity);
     }
 
@@ -53,6 +54,7 @@ public class StatsFragment extends Fragment {
         View v = inflater.inflate(getArguments().getInt("layoutInt"),container,false);
 
         currentTitle = (TextView) v.findViewById((R.id.current_title));
+        allTitles = (TextView) v.findViewById((R.id.overall_titles_text));
         weekBarChart = (BarChart) v.findViewById(R.id.current_title_chart);
         allTitlesBarChart = (BarChart) v.findViewById(R.id.all_books_chart);
 
@@ -72,6 +74,23 @@ public class StatsFragment extends Fragment {
                 }
                 populateChart(minutesHistory, weekBarChart, currentMins);
 
+            }
+        });
+
+        allTitles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), BookListActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        currentTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), bookDetailActivity.class);
+                intent.putExtra("id", getArguments().getString("bookId"));
+                startActivity(intent);
             }
         });
 

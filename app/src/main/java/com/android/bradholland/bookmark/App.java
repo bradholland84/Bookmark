@@ -20,6 +20,7 @@ public class App extends Application {
 
         //parse objects must be registered before Parse initialization!!!
         ParseObject.registerSubclass(Book.class);
+        ParseObject.registerSubclass(Log.class);
         Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, "2EZ7UE9h7CmotK7mXoEDbADyJYOs9p3cbKdM1hdp", "3OHAX3n6EE4x4xfpw3FYvh8MJ6btuQQOHTIu3GXo");
 
