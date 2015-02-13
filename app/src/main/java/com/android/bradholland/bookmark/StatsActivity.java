@@ -18,6 +18,7 @@ public class StatsActivity extends ActionBarActivity {
     private SlidingTabLayout tabs;
     private CharSequence Titles[]={"Weekly","Monthly"};
     private int Numboftabs =2;
+    private String bookId = "nEy1afcb7v";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class StatsActivity extends ActionBarActivity {
 
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,Numboftabs);
+        adapter =  new ViewPagerAdapter(getSupportFragmentManager(),Titles,Numboftabs, bookId);
 
         // Assigning ViewPager View and setting the adapter
         pager = (ViewPager) findViewById(R.id.pager);
@@ -54,6 +55,8 @@ public class StatsActivity extends ActionBarActivity {
 
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setViewPager(pager);
+
+
 
     }
 

@@ -8,12 +8,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  * Created by Brad on 1/22/2015.
  */
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
-    CharSequence Titles[];
-    int NumOfTabs;
+    private CharSequence Titles[];
+    private int NumOfTabs;
+    private String bookId;
 
-    public ViewPagerAdapter(FragmentManager fm,CharSequence mTitles[], int mNumbOfTabs) {
+    public ViewPagerAdapter(FragmentManager fm,CharSequence mTitles[], int mNumbOfTabs, String bookId) {
         super(fm);
-
+        this.bookId = bookId;
         this.Titles = mTitles;
         this.NumOfTabs = mNumbOfTabs;
     }
@@ -22,10 +23,10 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
 
         if(position == 0) {
-            WeeklyStatsFragment weekly = new WeeklyStatsFragment();
+            StatsFragment weekly = StatsFragment.newInstance(bookId, R.layout.tab_weekly);
             return weekly;
         } else {
-            MonthlyStatsFragment monthly = new MonthlyStatsFragment();
+            StatsFragment monthly = StatsFragment.newInstance(bookId, R.layout.tab_monthly);
             return monthly;
         }
     }
