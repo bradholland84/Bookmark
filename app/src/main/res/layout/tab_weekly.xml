@@ -19,7 +19,7 @@
         android:layout_height="256dp"
         android:padding="5dp"
         android:layout_below="@id/current_title"
-        app:egFixedBarWidth="false"
+        app:egFixedBarWidth="true"
         app:egVisibleBars="8"
         app:egBarWidth="24dp"
         app:egLegendHeight="30dp"

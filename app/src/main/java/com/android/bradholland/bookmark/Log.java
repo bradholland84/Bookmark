@@ -5,8 +5,6 @@ import com.parse.ParseObject;
 
 import org.joda.time.DateTime;
 
-import java.util.Date;
-
 /**
  * Created by Brad on 2/13/2015.
  */
@@ -22,8 +20,8 @@ public class Log extends ParseObject {
         put("timeStamp", dt.toDate());
     }
 
-    public Date getTimeStamp() {
-        return getDate("timeStamp");
+    public DateTime getTimeStamp() {
+        return new DateTime(getDate("timeStamp"));
     }
 
     public void setMinutesRead(int n) {

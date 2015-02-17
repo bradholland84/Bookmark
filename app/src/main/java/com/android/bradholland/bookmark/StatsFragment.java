@@ -10,27 +10,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.models.BarModel;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 import org.json.JSONArray;
-import org.json.JSONException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Created by Brad on 1/22/2015.
  */
 public class StatsFragment extends Fragment {
 
-    private BarChart weekBarChart;
+    private BarChart barChart;
     private int currentMins;
     private BarChart allTitlesBarChart;
     private String title;
     private TextView allTitles;
     private TextView currentTitle;
     private JSONArray minutesHistory;
+    private Book mBook;
 
 
     public static StatsFragment newInstance(String bookId, int layoutInt) {
@@ -55,7 +63,7 @@ public class StatsFragment extends Fragment {
 
         currentTitle = (TextView) v.findViewById((R.id.current_title));
         allTitles = (TextView) v.findViewById((R.id.overall_titles_text));
-        weekBarChart = (BarChart) v.findViewById(R.id.current_title_chart);
+        barChart = (BarChart) v.findViewById(R.id.current_title_chart);
         allTitlesBarChart = (BarChart) v.findViewById(R.id.all_books_chart);
 
         ParseQuery<Book> query = ParseQuery.getQuery("Books");
@@ -63,19 +71,14 @@ public class StatsFragment extends Fragment {
         query.getFirstInBackground(new GetCallback<Book>() {
             @Override
             public void done(Book book, ParseException e) {
+                mBook = book;
                 title = book.getTitle();
                 currentTitle.setText(title);
-                if (getArguments().getInt("layoutInt") == R.layout.tab_weekly) {
-                    minutesHistory = book.getWeekMinutesHistory();
-                    currentMins = book.getWeeklyMinutes();
-                } else {
-                    minutesHistory = book.getMonthMinutesHistory();
-                    currentMins = book.getMonthlyMinutes();
-                }
-                populateChart(minutesHistory, weekBarChart, currentMins);
-
+                newPopulateChart();
             }
         });
+
+        populateAllBooksChart();
 
         allTitles.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,19 +106,72 @@ public class StatsFragment extends Fragment {
 
     }
 
-    // Populates the chart view with data
-    private void populateChart(JSONArray array, BarChart chart, int currentMins) {
-        try {
-            for (int i = 0; i < array.length(); i++) {
-                BarModel bm = new BarModel("Aug", array.getInt(i), 0xFF44B8B8);
-                chart.addBar(bm);
+    // Populates the data chart for the specific book
+    private void newPopulateChart() {
+        ParseQuery<Log> logQuery = ParseQuery.getQuery("Logs");
+        logQuery.whereEqualTo("parent", mBook);
+        logQuery.findInBackground(new FindCallback<Log>() {
+            @Override
+            public void done(List<Log> logs, ParseException e) {
+                if (getArguments().getInt("layoutInt") == R.layout.tab_weekly) {
+                    logsToChartData(logs, barChart, true);
+                } else {
+                    logsToChartData(logs, barChart, false);
+                }
             }
-        } catch (JSONException E) {
-            E.printStackTrace();
-        }
-        BarModel last = new BarModel(currentMins, 0xFFFFCA28);
-        chart.addBar(last);
-        chart.startAnimation();
+        });
     }
 
+    // Populates the data chart for all titles
+    private void populateAllBooksChart() {
+        ParseQuery<Log> logQuery = ParseQuery.getQuery("Logs");
+        logQuery.whereEqualTo("createdBy", ParseUser.getCurrentUser());
+        logQuery.findInBackground(new FindCallback<Log>() {
+            @Override
+            public void done(List<Log> logs, ParseException e) {
+                if (getArguments().getInt("layoutInt") == R.layout.tab_weekly) {
+                    logsToChartData(logs, allTitlesBarChart, true);
+                } else {
+                    logsToChartData(logs, allTitlesBarChart, false);
+                }
+            }
+        });
+    }
+
+    // Uses the logs for either the specific book or all books, and populates the charts with
+    // their data
+    private void logsToChartData(List<Log> logs, BarChart chart, boolean isWeek) {
+        DateTimeFormatter fmt = new DateTimeFormatterBuilder()
+
+                .appendWeekOfWeekyear(2)
+                .appendLiteral("/")
+                .appendTwoDigitYear(2050)
+                .toFormatter();
+        if (!isWeek) {
+            fmt = new DateTimeFormatterBuilder()
+                    .appendMonthOfYearShortText()
+                    .appendLiteral(" ")
+                    .appendTwoDigitYear(2050)
+                    .toFormatter();
+        }
+
+        Map<String, Integer> logMap = new TreeMap<>();
+
+        for (Log entry : logs) {
+            String keyString = entry.getTimeStamp().toString(fmt);
+
+            if (logMap.containsKey(keyString)) {
+                int mins = logMap.get(keyString);
+                logMap.put(keyString, entry.getMinutesRead() + mins);
+            } else {
+                logMap.put(keyString, entry.getMinutesRead());
+            }
+        }
+
+        for (String key : logMap.keySet()) {
+            BarModel bm = new BarModel(key, logMap.get(key),0xFF44B8B8);
+            chart.addBar(bm);
+        }
+        chart.startAnimation();
+    }
 }

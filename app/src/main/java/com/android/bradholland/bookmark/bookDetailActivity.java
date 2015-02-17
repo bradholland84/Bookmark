@@ -1,6 +1,5 @@
 package com.android.bradholland.bookmark;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -17,6 +16,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
@@ -24,6 +24,7 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.r0adkll.slidr.Slidr;
 
 import org.joda.time.DateTime;
@@ -32,7 +33,7 @@ import org.json.JSONArray;
 /**
  * Created by Brad on 10/13/2014.
  */
-public class bookDetailActivity extends ActionBarActivity implements ActionMode.Callback, LogDialogFragment.LogDialogListener {
+public class bookDetailActivity extends ActionBarActivity implements ActionMode.Callback {
     private boolean editFlag = false;
     private ParseImageView coverPhoto;
     private EditText titleEditText;
@@ -52,6 +53,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
     private DateTime mBookWeekDateTime;
     private JSONArray monthMinutesHistory;
     private JSONArray weekMinutesHistory;
+    private com.android.bradholland.bookmark.Log log;
     ActionMode mActionMode;
 
     @Override
@@ -123,6 +125,7 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
             @Override
             public void onClick(View view) {
                 // TODO: dialogue to create new log goes here
+                showMaterialDialog();
             }
         });
 
@@ -205,18 +208,52 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
         }
     }
 
-    public void showLogDialog() {
-        DialogFragment dialog = new LogDialogFragment();
-        dialog.show(getSupportFragmentManager(), "LogDialogFragment");
+    public void showMaterialDialog() {
+        new MaterialDialog.Builder(this)
+                .title("New log entry")
+                .customView(R.layout.dialog_new_log, false)
+                .positiveText("save")
+                .negativeText("cancel")
+                .negativeColorRes(R.color.primary)
+                .positiveColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        View v = dialog.getCustomView();
+
+                        EditText hours = (EditText) v.findViewById(R.id.et_hours);
+                        EditText minutes = (EditText) v.findViewById(R.id.et_minutes);
+                        EditText notes = (EditText) v.findViewById(R.id.et_notes);
+
+                        if (hours.getText().toString().equals("")) {
+                            hours.setText("0");
+
+                        }
+                        if (minutes.getText().toString().equals("")) {
+                            minutes.setText("0");
+                        }
+
+                        log = new com.android.bradholland.bookmark.Log();
+                        log.setMinutesRead(
+                                (Integer.parseInt(hours.getText().toString()) * 60)
+                                        + (Integer.parseInt(minutes.getText().toString())));
+                        log.setNotes(notes.getText().toString());
+                        log.setTimeStamp(new DateTime());
+                        log.setBookId(bookId);
+                        log.put("parent", mBook);
+                        log.put("createdBy", ParseUser.getCurrentUser());
+                        log.saveEventually();
+                        Toast.makeText(getBaseContext(), "Log saved", Toast.LENGTH_SHORT).show();
+                    }
+
+                    public void onNegative(MaterialDialog dialog) {
+                        //Nothing to do
+                    }
+                })
+                .show();
     }
 
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        //TODO: user pressed positive button...
-    }
 
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        //TODO: user pressed negative button...
-    }
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
