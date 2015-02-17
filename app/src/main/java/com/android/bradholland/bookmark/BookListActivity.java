@@ -227,7 +227,16 @@ public class BookListActivity extends ActionBarActivity {
               imageView.setPlaceholder(d);
               titleView.setText(book.getTitle());
               descriptionView.setText(book.getDescription());
-              ratingView.setText("Your Rating: " + book.getRating());
+              String stars = "\u2605";
+              String half = "\u00BD";
+              String rating = "";
+              for (double i = 0.0; i < Math.floor(book.getRating()); i++) {
+                  rating += stars;
+              }
+              if (Math.floor(book.getRating()) != book.getRating()) {
+                  rating += half;
+              }
+              ratingView.setText(rating);
 
               ParseFile photoFile = book.getParseFile("coverPhotoThumbnail");
               if (photoFile != null) {

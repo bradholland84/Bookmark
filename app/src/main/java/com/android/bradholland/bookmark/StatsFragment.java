@@ -18,6 +18,7 @@ import com.parse.ParseUser;
 
 import org.eazegraph.lib.charts.BarChart;
 import org.eazegraph.lib.models.BarModel;
+import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.json.JSONArray;
@@ -142,12 +143,13 @@ public class StatsFragment extends Fragment {
     // their data
     private void logsToChartData(List<Log> logs, BarChart chart, boolean isWeek) {
         DateTimeFormatter fmt = new DateTimeFormatterBuilder()
-
+                //weekly data formatter
                 .appendWeekOfWeekyear(2)
                 .appendLiteral("/")
                 .appendTwoDigitYear(2050)
                 .toFormatter();
         if (!isWeek) {
+            //monthly data formatter
             fmt = new DateTimeFormatterBuilder()
                     .appendMonthOfYearShortText()
                     .appendLiteral(" ")
@@ -156,10 +158,11 @@ public class StatsFragment extends Fragment {
         }
 
         Map<String, Integer> logMap = new TreeMap<>();
-
+        DateTime current = new DateTime();
+        String currentKey = current.toString(fmt);
         for (Log entry : logs) {
             String keyString = entry.getTimeStamp().toString(fmt);
-
+            //create keystring for comparison
             if (logMap.containsKey(keyString)) {
                 int mins = logMap.get(keyString);
                 logMap.put(keyString, entry.getMinutesRead() + mins);
@@ -167,9 +170,15 @@ public class StatsFragment extends Fragment {
                 logMap.put(keyString, entry.getMinutesRead());
             }
         }
-
+        // Use map data to create bar models, add to chart
         for (String key : logMap.keySet()) {
-            BarModel bm = new BarModel(key, logMap.get(key),0xFF44B8B8);
+            BarModel bm;
+            if (key.equals(currentKey)) {
+                // highlight current week/month bar
+                 bm = new BarModel(key, logMap.get(key), 0xffffca28);
+            } else {
+                 bm = new BarModel(key, logMap.get(key), 0xFF44B8B8);
+            }
             chart.addBar(bm);
         }
         chart.startAnimation();

@@ -43,7 +43,7 @@
         android:layout_below="@+id/description_view"
         android:layout_toRightOf="@+id/iv_cover_photo"
         android:layout_toEndOf="@+id/iv_cover_photo"
-        android:textColor="#ff2e7b6e" />
+        android:textColor="@color/black" />
 
 
 </RelativeLayout>
