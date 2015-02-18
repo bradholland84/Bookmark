@@ -34,4 +34,13 @@
         android:layout_toRightOf="@+id/btn_title_list_intent"
         android:layout_toEndOf="@+id/btn_title_list_intent" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test activity"
+        android:id="@+id/btn_test"
+        android:layout_below="@+id/imageView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp" />
+
 </RelativeLayout>
