@@ -42,7 +42,7 @@ public class DashboardActivity extends ActionBarActivity {
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(DashboardActivity.this, StatsActivity.class);
+                Intent intent = new Intent(DashboardActivity.this, Testing.class);
                 startActivity(intent);
             }
         });
