@@ -27,20 +27,26 @@
         android:id="@+id/et_title"
         android:layout_below="@+id/tv_title"
         android:enabled="true"
+        android:hint="Title"
         android:focusable="false"
-        android:focusableInTouchMode="false" />
+        android:focusableInTouchMode="false"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"/>
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_description"
+        android:hint="Description"
         android:layout_below="@+id/et_title"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="42dp"
         android:enabled="true"
         android:focusable="false"
-        android:focusableInTouchMode="false" />
+        android:focusableInTouchMode="false"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"

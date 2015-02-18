@@ -25,7 +25,6 @@ import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.r0adkll.slidr.Slidr;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -60,7 +59,6 @@ public class bookDetailActivity extends ActionBarActivity implements ActionMode.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.book_detail_layout);
-        Slidr.attach(this);
         mClock = new Clock();
         editFlag = false;
 
