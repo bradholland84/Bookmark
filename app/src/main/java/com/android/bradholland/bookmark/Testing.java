@@ -10,8 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,39 +21,39 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.melnykov.fab.FloatingActionButton;
 import com.nineoldandroids.view.ViewHelper;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.joda.time.DateTime;
-import org.json.JSONArray;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+
+import java.util.List;
 
 /**
  * Created by Brad on 10/13/2014.
  */
 public class Testing extends ActionBarActivity implements ActionMode.Callback, ObservableScrollViewCallbacks {
-    private boolean editFlag = false;
     private ParseImageView coverPhoto;
-    private EditText titleEditText;
-    private EditText descriptionEditText;
-    private TextView minutesReadTextView;
+    private TextView tv_description;
+    private TextView recentLogsHeader;
     private RatingBar ratingBar;
-    private Button toggleReading;
     private String title;
     private String bookId;
     private String description;
     private double bookRating;
     private int minutes;
-    private DateTime sessionStart;
-    private Clock mClock;
     private Book mBook;
-    private DateTime mBookMonthDateTime;
-    private DateTime mBookWeekDateTime;
-    private JSONArray monthMinutesHistory;
-    private JSONArray weekMinutesHistory;
+    private FloatingActionButton fab;
+    private LinearLayout loglayout;
     private com.android.bradholland.bookmark.Log log;
     ActionMode mActionMode;
 
@@ -68,8 +68,6 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_parallax_layout);
-        mClock = new Clock();
-        editFlag = false;
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
@@ -80,8 +78,10 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
         bookId = "nEy1afcb7v";
         Log.v("TAGID", bookId);
 
-        mImageView = findViewById(R.id.image);
+        tv_description = (TextView)findViewById(R.id.tv_description);
+        mImageView = findViewById(R.id.iv_cover_photo);
         mToolbarView = findViewById(R.id.support_toolbar);
+        recentLogsHeader = (TextView)findViewById(R.id.tv_log_header);
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.primary)));
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll);
         mScrollView.setScrollViewCallbacks(this);
@@ -90,27 +90,19 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
 
         ParseQuery<Book> query = ParseQuery.getQuery("Books");
         query.fromLocalDatastore();
+
         query.whereEqualTo("objectId", bookId);
         query.getFirstInBackground(new GetCallback<Book>() {
             @Override
             public void done(Book book, ParseException e) {
                 mBook = book;
-                mBookMonthDateTime = new DateTime(mBook.getMonthDate());
-                mBookWeekDateTime = new DateTime(mBook.getWeekDate());
-                Log.v("time", "current month time is =" + mBookMonthDateTime.toString());
                 title = book.getTitle();
                 description = book.getDescription();
                 bookRating = book.getRating();
-                minutes = book.getTotalMinutes();
-                monthMinutesHistory = book.getMonthMinutesHistory();
-                weekMinutesHistory = book.getWeekMinutesHistory();
 
-                //titleEditText = (EditText) findViewById(R.id.et_title);
-                //descriptionEditText = (EditText) findViewById(R.id.et_description);
-                //ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
-                //ratingBar.setIsIndicator(true);
-                //minutesReadTextView = (TextView) findViewById(R.id.tv_minutes);
-                /*
+                tv_description.setText(description);
+                getSupportActionBar().setTitle(title);
+
                 coverPhoto = (ParseImageView) findViewById(R.id.iv_cover_photo);
                 final ParseFile photoFile = book.getPhotoFile();
                 if (photoFile != null) {
@@ -123,33 +115,57 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
                         }
                     });
                 } else {
+                    coverPhoto.setImageResource(R.drawable.default_cover);
                     Log.v("pic", "file NULL, doesn't exist yet");
                 }
-                titleEditText.setText(title);
-                descriptionEditText.setText(description);
-                ratingBar.setRating((float) bookRating);
-                minutesReadTextView.setText("Minutes read: " + Integer.toString(minutes));
-*/
-                getSupportActionBar().setTitle(title);
             }
         });
-/*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_add_log);
+
+
+        ParseQuery<com.android.bradholland.bookmark.Log> logQuery = ParseQuery.getQuery("Logs");
+        logQuery.whereEqualTo("Books", mBook);
+        logQuery.setLimit(10);
+        logQuery.orderByDescending("timeStamp");
+        logQuery.findInBackground(new FindCallback<com.android.bradholland.bookmark.Log>() {
+            @Override
+            public void done(List<com.android.bradholland.bookmark.Log> logs, ParseException e) {
+                loglayout = (LinearLayout)findViewById(R.id.ll_logs_preview);
+                for (int i = 0; i < 10; i++) {
+                    com.android.bradholland.bookmark.Log mLog = logs.get(i);
+                    View v = getLayoutInflater().inflate(R.layout.log_item, loglayout, false);
+
+                    TextView timeStamp = (TextView) v.findViewById(R.id.tv_timestamp);
+                    TextView minutes = (TextView) v.findViewById(R.id.tv_minutesRead);
+                    TextView notes = (TextView) v.findViewById(R.id.tv_notes);
+
+                    DateTimeFormatter fmt = new DateTimeFormatterBuilder()
+                            .appendMonthOfYearShortText()
+                            .appendDayOfMonth(1)
+                            .toFormatter();
+                    timeStamp.setText(mLog.getTimeStamp().toString(fmt));
+                    minutes.setText("" + mLog.getMinutesRead() + " Minutes ");
+                    if (mLog.getNotes().equals("")) {
+                        mLog.setNotes("Blank note");
+                    }
+                    notes.setText(mLog.getNotes());
+                    loglayout.addView(v, i);
+
+                }
+            }
+        });
+
+
+        // Code to add the floatingActionButton to this activity, creates new reading dialogs
+        fab = (FloatingActionButton) findViewById(R.id.btn_add_log);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: dialogue to create new log goes here
                 showMaterialDialog();
             }
         });
 
-*/
-
-
-
-
-
     }
+
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -163,6 +179,15 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
         float alpha = 1 - (float) Math.max(0, mParallaxImageHeight - scrollY) / mParallaxImageHeight;
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
         ViewHelper.setTranslationY(mImageView, scrollY / 2);
+        ViewHelper.setTranslationY(tv_description, scrollY / 2);
+        ViewHelper.setTranslationY(loglayout, scrollY / 2);
+        ViewHelper.setTranslationY(recentLogsHeader, scrollY / 2);
+        if (scrollY < 0) {
+            fab.show();
+        }
+        else if (scrollY > 0) {
+            fab.hide();
+        }
     }
 
     @Override
@@ -186,6 +211,8 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
         switch (item.getItemId()) {
             case R.id.action_edit_book:
                 // do edit stuff function here
+                //TODO: Fix edit functionality
+                /*
                 titleEditText = (EditText) findViewById(R.id.et_title);
                 descriptionEditText = (EditText) findViewById(R.id.et_description);
                 ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
@@ -196,6 +223,7 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
                 descriptionEditText.setFocusableInTouchMode(true);
                 ratingBar.setIsIndicator(false);
                 ratingBar.setFocusableInTouchMode(true);
+                */
 
                 return true;
             default:
@@ -213,6 +241,16 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
     }
 
     @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false; // Return false if nothing is done
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        mActionMode = null;
+    }
+
+    @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_book:
@@ -221,13 +259,17 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
                 query.getInBackground(bookId, new GetCallback<Book>() {
                     @Override
                     public void done(Book book, ParseException e) {
+                        //TODO: Fix edit functionality
+                        /*
                         book.put("title", titleEditText.getText().toString());
                         book.put("description", descriptionEditText.getText().toString());
                         book.put("rating", ratingBar.getRating());
                         book.saveEventually();
+                        */
                     }
                 });
-
+                //TODO: Fix edit functionality
+                /*
                 titleEditText = (EditText) findViewById(R.id.et_title);
                 descriptionEditText = (EditText) findViewById(R.id.et_description);
                 ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
@@ -238,6 +280,7 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
                 ratingBar.setIsIndicator(true);
                 ratingBar.setFocusableInTouchMode(false);
                 editFlag = true;
+                */
                 mode.finish(); // Action picked, so close the CAB
                 Toast.makeText(this, "Book Updated!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
@@ -293,18 +336,5 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
                 })
                 .show();
     }
-
-
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false; // Return false if nothing is done
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        mActionMode = null;
-    }
-
 
 }
