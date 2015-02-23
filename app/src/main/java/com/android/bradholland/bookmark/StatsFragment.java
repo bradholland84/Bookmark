@@ -23,9 +23,9 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.json.JSONArray;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by Brad on 1/22/2015.
@@ -111,6 +111,7 @@ public class StatsFragment extends Fragment {
     private void newPopulateChart() {
         ParseQuery<Log> logQuery = ParseQuery.getQuery("Logs");
         logQuery.whereEqualTo("parent", mBook);
+        logQuery.orderByAscending("timeStamp");
         logQuery.findInBackground(new FindCallback<Log>() {
             @Override
             public void done(List<Log> logs, ParseException e) {
@@ -127,6 +128,7 @@ public class StatsFragment extends Fragment {
     private void populateAllBooksChart() {
         ParseQuery<Log> logQuery = ParseQuery.getQuery("Logs");
         logQuery.whereEqualTo("createdBy", ParseUser.getCurrentUser());
+        logQuery.orderByAscending("timeStamp");
         logQuery.findInBackground(new FindCallback<Log>() {
             @Override
             public void done(List<Log> logs, ParseException e) {
@@ -144,8 +146,9 @@ public class StatsFragment extends Fragment {
     private void logsToChartData(List<Log> logs, BarChart chart, boolean isWeek) {
         DateTimeFormatter fmt = new DateTimeFormatterBuilder()
                 //weekly data formatter
-                .appendWeekOfWeekyear(2)
-                .appendLiteral("/")
+
+                .appendWeekOfWeekyear(1)
+                .appendLiteral("/52  '")
                 .appendTwoDigitYear(2050)
                 .toFormatter();
         if (!isWeek) {
@@ -157,7 +160,7 @@ public class StatsFragment extends Fragment {
                     .toFormatter();
         }
 
-        Map<String, Integer> logMap = new TreeMap<>();
+        Map<String, Integer> logMap = new LinkedHashMap<>();
         DateTime current = new DateTime();
         String currentKey = current.toString(fmt);
         for (Log entry : logs) {
