@@ -92,7 +92,7 @@ public class StatsFragment extends Fragment {
         currentTitle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), bookDetailActivity.class);
+                Intent intent = new Intent(getActivity(), BookDetailActivityParallax.class);
                 intent.putExtra("id", getArguments().getString("bookId"));
                 startActivity(intent);
             }

@@ -28,10 +28,10 @@
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".Testing" />
+        <activity android:name=".BookDetailActivityParallax" />
 
         <activity
-            android:name=".bookDetailActivity"
+            android:name=".OldBookDetailActivity"
             android:label=" "
             android:screenOrientation="portrait" >
             <meta-data

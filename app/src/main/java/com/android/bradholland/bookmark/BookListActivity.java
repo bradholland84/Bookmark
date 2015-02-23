@@ -19,7 +19,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
@@ -110,7 +112,7 @@ public class BookListActivity extends ActionBarActivity {
                 selectedBookObjectId = item.getObjectId();
                 Log.v("BookID", selectedBookObjectId);
 
-                Intent intent = new Intent(BookListActivity.this, bookDetailActivity.class);
+                Intent intent = new Intent(BookListActivity.this, BookDetailActivityParallax.class);
                 intent.putExtra("id", selectedBookObjectId);
                 startActivityForResult(intent, DATA_CHANGED_REQUEST);
 
@@ -180,36 +182,40 @@ public class BookListActivity extends ActionBarActivity {
 
             switch (item.getItemId()) {
 
-            case R.id.make_current_title:
-                ParseQuery<Book> currentTitleQuery = ParseQuery.getQuery("Books");
-                currentTitleQuery.getInBackground(contextBookId, new GetCallback<Book>() {
-                    @Override
-                    public void done(Book book, ParseException e) {
-                        book.setCurrentTitle(true);
-                    }
-                });
-                doListQuery();
-
             case R.id.delete_book:
-                Log.v("context menu", "Book should be deleted!");
-                ParseQuery<Book> deleteQuery = ParseQuery.getQuery("Books");
-                deleteQuery.fromLocalDatastore();
-                deleteQuery.getInBackground(contextBookId, new GetCallback<Book>() {
-                    @Override
-                    public void done(Book book, ParseException e) {
-                        book.unpinInBackground();
-                        book.deleteInBackground();
-                        doListQuery();
-                    }
-                });
-
-
+                deleteConfirmationDialog(contextBookId);
 
             default: return false;
         }
     }
 
-
+    public void deleteConfirmationDialog(final String bookId) {
+        new MaterialDialog.Builder(this)
+                .title("Are you sure you want to delete this book?")
+                .content("This action cannot be undone.")
+                .positiveText("Delete")
+                .negativeText("Cancel")
+                .negativeColorRes(R.color.primary)
+                .positiveColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        Log.v("context menu", "Book should be deleted!");
+                        ParseQuery<Book> deleteQuery = ParseQuery.getQuery("Books");
+                        deleteQuery.fromLocalDatastore();
+                        deleteQuery.getInBackground(bookId, new GetCallback<Book>() {
+                            @Override
+                            public void done(Book book, ParseException e) {
+                                book.unpinInBackground();
+                                book.deleteInBackground();
+                                Toast.makeText(getBaseContext(), "Book deleted", Toast.LENGTH_SHORT).show();
+                                doListQuery();
+                            }
+                        });
+                    }
+                })
+                .show();
+    }
 
   public void adapt(ParseQueryAdapter.QueryFactory factory) {
       booksQueryAdapter = new ParseQueryAdapter<Book>(this, factory) {

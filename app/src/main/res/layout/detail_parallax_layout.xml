@@ -26,8 +26,8 @@
                 android:layout_height="@dimen/parallax_image_height"
                 android:minHeight="@dimen/parallax_image_height" />
 
-            <TextView
-                android:id="@+id/tv_description"
+            <EditText
+                android:id="@+id/et_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/anchor"
@@ -37,13 +37,18 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="16dp"
                 android:textSize="24sp"
-                android:textColor="@color/white" />
+                android:scrollHorizontally="false"
+                android:focusable="false"
+                android:textColor="@color/white"
+                android:enabled="true"
+                android:inputType="textMultiLine"
+                android:longClickable="true" />
 
             <TextView
                 android:id="@+id/tv_log_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_description"
+                android:layout_below="@id/et_description"
                 android:background="@android:color/white"
                 android:paddingBottom="16dp"
                 android:paddingLeft="@dimen/activity_horizontal_margin"

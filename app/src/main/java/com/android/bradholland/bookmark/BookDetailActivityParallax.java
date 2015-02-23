@@ -41,14 +41,15 @@ import java.util.List;
 /**
  * Created by Brad on 10/13/2014.
  */
-public class Testing extends ActionBarActivity implements ActionMode.Callback, ObservableScrollViewCallbacks {
+public class BookDetailActivityParallax extends ActionBarActivity implements ActionMode.Callback, ObservableScrollViewCallbacks {
     private ParseImageView coverPhoto;
-    private TextView tv_description;
+    private EditText et_description;
     private TextView recentLogsHeader;
     private RatingBar ratingBar;
     private String title;
     private String bookId;
     private String description;
+    private Intent intent;
     private double bookRating;
     private int minutes;
     private Book mBook;
@@ -74,11 +75,11 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent intent = getIntent();
-        bookId = "nEy1afcb7v";
+        intent = getIntent();
+        bookId = intent.getStringExtra("id");
         Log.v("TAGID", bookId);
 
-        tv_description = (TextView)findViewById(R.id.tv_description);
+        et_description = (EditText)findViewById(R.id.et_description);
         mImageView = findViewById(R.id.iv_cover_photo);
         mToolbarView = findViewById(R.id.support_toolbar);
         recentLogsHeader = (TextView)findViewById(R.id.tv_log_header);
@@ -95,12 +96,13 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
         query.getFirstInBackground(new GetCallback<Book>() {
             @Override
             public void done(Book book, ParseException e) {
+                book.pinInBackground();
                 mBook = book;
                 title = book.getTitle();
                 description = book.getDescription();
                 bookRating = book.getRating();
 
-                tv_description.setText(description);
+                et_description.setText(description);
                 getSupportActionBar().setTitle(title);
 
                 coverPhoto = (ParseImageView) findViewById(R.id.iv_cover_photo);
@@ -123,14 +125,15 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
 
 
         ParseQuery<com.android.bradholland.bookmark.Log> logQuery = ParseQuery.getQuery("Logs");
-        logQuery.whereEqualTo("Books", mBook);
+        logQuery.whereEqualTo("bookId", bookId);
         logQuery.setLimit(10);
         logQuery.orderByDescending("timeStamp");
         logQuery.findInBackground(new FindCallback<com.android.bradholland.bookmark.Log>() {
             @Override
             public void done(List<com.android.bradholland.bookmark.Log> logs, ParseException e) {
+                int size = logs.size();
                 loglayout = (LinearLayout)findViewById(R.id.ll_logs_preview);
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < size; i++) {
                     com.android.bradholland.bookmark.Log mLog = logs.get(i);
                     View v = getLayoutInflater().inflate(R.layout.log_item, loglayout, false);
 
@@ -179,7 +182,7 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
         float alpha = 1 - (float) Math.max(0, mParallaxImageHeight - scrollY) / mParallaxImageHeight;
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
         ViewHelper.setTranslationY(mImageView, scrollY / 2);
-        ViewHelper.setTranslationY(tv_description, scrollY / 2);
+        ViewHelper.setTranslationY(et_description, scrollY / 2);
         ViewHelper.setTranslationY(loglayout, scrollY / 2);
         ViewHelper.setTranslationY(recentLogsHeader, scrollY / 2);
         if (scrollY < 0) {
@@ -211,19 +214,15 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
         switch (item.getItemId()) {
             case R.id.action_edit_book:
                 // do edit stuff function here
-                //TODO: Fix edit functionality
-                /*
-                titleEditText = (EditText) findViewById(R.id.et_title);
-                descriptionEditText = (EditText) findViewById(R.id.et_description);
-                ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
+
+                et_description = (EditText) findViewById(R.id.et_description);
+                //ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
                 mActionMode = this.startSupportActionMode(this);
-                titleEditText.setFocusable(true);
-                titleEditText.setFocusableInTouchMode(true);
-                descriptionEditText.setFocusable(true);
-                descriptionEditText.setFocusableInTouchMode(true);
-                ratingBar.setIsIndicator(false);
-                ratingBar.setFocusableInTouchMode(true);
-                */
+                et_description.setFocusable(true);
+                et_description.setFocusableInTouchMode(true);
+                et_description.setTextColor(getResources().getColor(R.color.accent));
+                //ratingBar.setIsIndicator(false);
+                //ratingBar.setFocusableInTouchMode(true);
 
                 return true;
             default:
@@ -236,6 +235,7 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
 
         // Inflate a menu resource providing context menu items
         MenuInflater inflater = mode.getMenuInflater();
+        fab.hide();
         inflater.inflate(R.menu.book_detail_contextual, menu);
         return true;
     }
@@ -247,6 +247,8 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        et_description.setTextColor(getResources().getColor(R.color.white));
+        fab.show();
         mActionMode = null;
     }
 
@@ -260,33 +262,32 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
                     @Override
                     public void done(Book book, ParseException e) {
                         //TODO: Fix edit functionality
-                        /*
-                        book.put("title", titleEditText.getText().toString());
-                        book.put("description", descriptionEditText.getText().toString());
-                        book.put("rating", ratingBar.getRating());
+
+                        book.put("description", et_description.getText().toString());
+                       // book.put("rating", ratingBar.getRating());
                         book.saveEventually();
-                        */
+
                     }
                 });
                 //TODO: Fix edit functionality
-                /*
-                titleEditText = (EditText) findViewById(R.id.et_title);
-                descriptionEditText = (EditText) findViewById(R.id.et_description);
+
+                et_description = (EditText) findViewById(R.id.et_description);
                 ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
-                titleEditText.setFocusable(false);
-                titleEditText.setFocusableInTouchMode(false);
-                descriptionEditText.setFocusable(false);
-                descriptionEditText.setFocusableInTouchMode(false);
-                ratingBar.setIsIndicator(true);
-                ratingBar.setFocusableInTouchMode(false);
-                editFlag = true;
-                */
+                et_description.setFocusable(false);
+                et_description.setFocusableInTouchMode(false);
+                et_description.setTextColor(getResources().getColor(R.color.white));
+                //ratingBar.setIsIndicator(true);
+                //ratingBar.setFocusableInTouchMode(false);
+                fab.show();
                 mode.finish(); // Action picked, so close the CAB
                 Toast.makeText(this, "Book Updated!", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 setResult(RESULT_OK, intent);
                 finish();
                 return true;
+
+            case R.id.action_delete_book:
+                deleteConfirmationDialog();
             default:
                 return false;
         }
@@ -332,6 +333,37 @@ public class Testing extends ActionBarActivity implements ActionMode.Callback, O
 
                     public void onNegative(MaterialDialog dialog) {
                         //Nothing to do
+                    }
+                })
+                .show();
+    }
+
+    public void deleteConfirmationDialog() {
+        new MaterialDialog.Builder(this)
+                .title("Are you sure you want to delete this book?")
+                .content("This action cannot be undone.")
+                .positiveText("Delete")
+                .negativeText("Cancel")
+                .negativeColorRes(R.color.primary)
+                .positiveColorRes(R.color.primary)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        Log.v("context menu", "Book should be deleted!");
+                        ParseQuery<Book> deleteQuery = ParseQuery.getQuery("Books");
+                        deleteQuery.fromLocalDatastore();
+                        deleteQuery.getInBackground(bookId, new GetCallback<Book>() {
+                            @Override
+                            public void done(Book book, ParseException e) {
+                                book.unpinInBackground();
+                                book.deleteInBackground();
+                                Toast.makeText(getBaseContext(), "Book deleted", Toast.LENGTH_SHORT).show();
+                                if (intent != null) {
+                                    setResult(RESULT_OK, intent);
+                                }
+                                finish();
+                            }
+                        });
                     }
                 })
                 .show();

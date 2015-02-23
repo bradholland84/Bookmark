@@ -32,7 +32,7 @@ import org.json.JSONArray;
 /**
  * Created by Brad on 10/13/2014.
  */
-public class bookDetailActivity extends ActionBarActivity implements ActionMode.Callback {
+public class OldBookDetailActivity extends ActionBarActivity implements ActionMode.Callback {
     private boolean editFlag = false;
     private ParseImageView coverPhoto;
     private EditText titleEditText;
