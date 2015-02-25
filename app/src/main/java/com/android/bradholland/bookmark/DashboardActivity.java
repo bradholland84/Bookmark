@@ -20,6 +20,8 @@ public class DashboardActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
 
+
+
         Button viewAllTitlesButton = (Button) findViewById(R.id.btn_title_list_intent);
         viewAllTitlesButton.setOnClickListener(new View.OnClickListener() {
             @Override

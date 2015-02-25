@@ -10,28 +10,25 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View all titles"
+        android:text="My Library"
+        android:textColor="@color/white"
+        android:background="@drawable/button_custom"
         android:id="@+id/btn_title_list_intent"
-        android:layout_marginBottom="148dp"
+        android:layout_marginBottom="118dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="View your stats"
+        android:text="My Statistics"
+        android:textColor="@color/white"
         android:id="@+id/btn_stats_button"
-        android:layout_above="@+id/btn_title_list_intent"
-        android:layout_alignRight="@+id/btn_title_list_intent"
-        android:layout_alignEnd="@+id/btn_title_list_intent" />
+        android:background="@drawable/button_custom"
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/btn_title_list_intent"
+        android:layout_marginBottom="49dp" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:src="@drawable/library_icon_128"
-        android:layout_alignTop="@+id/btn_title_list_intent"
-        android:layout_toRightOf="@+id/btn_title_list_intent"
-        android:layout_toEndOf="@+id/btn_title_list_intent" />
+
 
 </RelativeLayout>
