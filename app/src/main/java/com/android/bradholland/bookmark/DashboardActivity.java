@@ -9,8 +9,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 
 public class DashboardActivity extends ActionBarActivity {
+
+    private String bookId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +26,18 @@ public class DashboardActivity extends ActionBarActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
+
+        final ParseUser currentUser = ParseUser.getCurrentUser();
+
+        ParseQuery<Log> query = ParseQuery.getQuery("Logs");
+        query.whereEqualTo("createdBy", currentUser);
+        query.orderByDescending("timeStamp");
+        query.getFirstInBackground(new GetCallback<Log>() {
+            @Override
+            public void done(Log mLog, ParseException e) {
+                bookId = mLog.getBookId();
+            }
+        });
 
 
 
@@ -36,6 +55,7 @@ public class DashboardActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(DashboardActivity.this, StatsActivity.class);
+                intent.putExtra("id", bookId);
                 startActivity(intent);
             }
         });

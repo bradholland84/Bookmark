@@ -29,12 +29,11 @@ public class LogsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_logs);
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
-
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         bookId = intent.getStringExtra("id");
-        android.util.Log.v("BOOK", bookId);
 
         ParseQueryAdapter.QueryFactory<com.android.bradholland.bookmark.Log> logfactory =
                 new ParseQueryAdapter.QueryFactory<com.android.bradholland.bookmark.Log>() {
@@ -66,7 +65,10 @@ public class LogsActivity extends ActionBarActivity {
 
                 DateTimeFormatter fmt = new DateTimeFormatterBuilder()
                         .appendMonthOfYearShortText()
+                        .appendLiteral(" ")
                         .appendDayOfMonth(1)
+                        .appendLiteral(", ")
+                        .appendYear(4, 4)
                         .toFormatter();
                 timeStamp.setText(mLog.getTimeStamp().toString(fmt));
                 minutes.setText("" + mLog.getMinutesRead() + " Minutes ");

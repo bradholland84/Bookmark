@@ -21,7 +21,6 @@ import org.eazegraph.lib.models.BarModel;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
-import org.json.JSONArray;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,12 +32,10 @@ import java.util.Map;
 public class StatsFragment extends Fragment {
 
     private BarChart barChart;
-    private int currentMins;
     private BarChart allTitlesBarChart;
     private String title;
     private TextView allTitles;
     private TextView currentTitle;
-    private JSONArray minutesHistory;
     private Book mBook;
 
 

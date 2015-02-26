@@ -109,8 +109,8 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(BookDetailActivityParallax.this, StatsActivity.class);
+                intent.putExtra("id", bookId);
                 startActivity(intent);
-                //intent.putExtra("id", bookId);
             }
         });
 
@@ -183,7 +183,10 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
 
                     DateTimeFormatter fmt = new DateTimeFormatterBuilder()
                             .appendMonthOfYearShortText()
+                            .appendLiteral(" ")
                             .appendDayOfMonth(1)
+                            .appendLiteral(", ")
+                            .appendYear(4, 4)
                             .toFormatter();
                     timeStamp.setText(mLog.getTimeStamp().toString(fmt));
                     minutes.setText("" + mLog.getMinutesRead() + " Minutes ");
