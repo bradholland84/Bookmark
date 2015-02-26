@@ -143,7 +143,10 @@ public class BookListActivity extends ActionBarActivity {
         // Handle action bar item clicks here
         switch (item.getItemId()) {
 
-            //noinspection SimplifiableIfStatement
+            case R.id.refresh_data:
+                doListQuery();
+                return true;
+
             case R.id.action_settings:
                 return true;
 

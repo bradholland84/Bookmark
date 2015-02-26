@@ -251,8 +251,6 @@ public class OldBookDetailActivity extends ActionBarActivity implements ActionMo
                 .show();
     }
 
-
-
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
         return false; // Return false if nothing is done
