@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -31,6 +32,7 @@ import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -45,6 +47,8 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     private ParseImageView coverPhoto;
     private EditText et_description;
     private TextView recentLogsHeader;
+    private Button btn_allLogs;
+    private Button btn_stats;
     private RatingBar ratingBar;
     private String title;
     private String bookId;
@@ -55,6 +59,7 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     private Book mBook;
     private FloatingActionButton fab;
     private LinearLayout loglayout;
+    private LinearLayout buttonLayout;
     private com.android.bradholland.bookmark.Log log;
     ActionMode mActionMode;
 
@@ -79,15 +84,35 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
         bookId = intent.getStringExtra("id");
         Log.v("TAGID", bookId);
 
+        buttonLayout = (LinearLayout)findViewById(R.id.ll_link_buttons);
         et_description = (EditText)findViewById(R.id.et_description);
         mImageView = findViewById(R.id.iv_cover_photo);
         mToolbarView = findViewById(R.id.support_toolbar);
         recentLogsHeader = (TextView)findViewById(R.id.tv_log_header);
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.primary)));
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll);
+        btn_allLogs = (Button) findViewById(R.id.btn_view_all_logs);
+        btn_stats = (Button) findViewById(R.id.btn_view_stats);
         mScrollView.setScrollViewCallbacks(this);
         mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
 
+        btn_allLogs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BookDetailActivityParallax.this, LogsActivity.class);
+                intent.putExtra("id", bookId);
+                startActivity(intent);
+            }
+        });
+
+        btn_stats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BookDetailActivityParallax.this, StatsActivity.class);
+                startActivity(intent);
+                //intent.putExtra("id", bookId);
+            }
+        });
 
         ParseQuery<Book> query = ParseQuery.getQuery("Books");
         query.fromLocalDatastore();
@@ -123,7 +148,21 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
             }
         });
 
+        doLogQuery();
 
+        // Code to add the floatingActionButton to this activity, creates new reading dialogs
+        fab = (FloatingActionButton) findViewById(R.id.btn_add_log);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showMaterialDialog();
+            }
+        });
+
+    }
+
+
+    public void doLogQuery() {
         ParseQuery<com.android.bradholland.bookmark.Log> logQuery = ParseQuery.getQuery("Logs");
         logQuery.whereEqualTo("bookId", bookId);
         logQuery.setLimit(10);
@@ -133,6 +172,7 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
             public void done(List<com.android.bradholland.bookmark.Log> logs, ParseException e) {
                 int size = logs.size();
                 loglayout = (LinearLayout)findViewById(R.id.ll_logs_preview);
+                loglayout.removeAllViews();
                 for (int i = 0; i < size; i++) {
                     com.android.bradholland.bookmark.Log mLog = logs.get(i);
                     View v = getLayoutInflater().inflate(R.layout.log_item, loglayout, false);
@@ -156,19 +196,7 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                 }
             }
         });
-
-
-        // Code to add the floatingActionButton to this activity, creates new reading dialogs
-        fab = (FloatingActionButton) findViewById(R.id.btn_add_log);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showMaterialDialog();
-            }
-        });
-
     }
-
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -185,12 +213,7 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
         ViewHelper.setTranslationY(et_description, scrollY / 2);
         ViewHelper.setTranslationY(loglayout, scrollY / 2);
         ViewHelper.setTranslationY(recentLogsHeader, scrollY / 2);
-        if (scrollY < 0) {
-            fab.show();
-        }
-        else if (scrollY > 0) {
-            fab.hide();
-        }
+        ViewHelper.setTranslationY(buttonLayout, scrollY / 2);
     }
 
     @Override
@@ -327,8 +350,18 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                         log.setBookId(bookId);
                         log.put("parent", mBook);
                         log.put("createdBy", ParseUser.getCurrentUser());
-                        log.saveEventually();
-                        Toast.makeText(getBaseContext(), "Log saved", Toast.LENGTH_SHORT).show();
+                        log.saveEventually(new SaveCallback() {
+                            public void done(ParseException e) {
+                                if (e == null) {
+                                    Toast.makeText(getBaseContext(), "Log saved", Toast.LENGTH_SHORT).show();
+                                    doLogQuery();
+                                } else {
+                                    Toast.makeText(getBaseContext(), "Error, Log not saved", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+
                     }
 
                     public void onNegative(MaterialDialog dialog) {

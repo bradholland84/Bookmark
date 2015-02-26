@@ -23,12 +23,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".DashboardActivity" />
         </activity>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".BookDetailActivityParallax" />
+
+        <activity android:name=".BookDetailActivityParallax">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".DashboardActivity" />
+        </activity>
+
+        <activity android:name=".LogsActivity"
+            android:label="All logs"
+            android:screenOrientation="portrait" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".BookDetailActivityParallax" />
+        </activity>
 
         <activity
             android:name=".OldBookDetailActivity"

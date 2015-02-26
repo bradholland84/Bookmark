@@ -11,7 +11,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp">
 
 
             <com.parse.ParseImageView
@@ -44,11 +45,39 @@
                 android:inputType="textMultiLine"
                 android:longClickable="true" />
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/ll_link_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_below="@+id/et_description"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View all logs"
+                    android:textColor="@color/white"
+                    android:id="@+id/btn_view_all_logs"
+                    android:background="@drawable/button_custom"
+                    android:layout_margin="8dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View stats"
+                    android:textColor="@color/white"
+                    android:id="@+id/btn_view_stats"
+                    android:background="@drawable/button_custom"
+                    android:layout_margin="8dp" />
+            </LinearLayout>
+
+
             <TextView
                 android:id="@+id/tv_log_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/et_description"
+                android:layout_below="@id/ll_link_buttons"
                 android:background="@android:color/white"
                 android:paddingBottom="16dp"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -64,7 +93,11 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_log_header"
+                android:paddingBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:background="@android:color/white" />
+
+
 
 
         </RelativeLayout>
