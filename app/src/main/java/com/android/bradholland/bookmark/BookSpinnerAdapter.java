@@ -33,16 +33,16 @@ public class BookSpinnerAdapter extends BaseAdapter {
     public void addItems(List<Book> yourObjectList) {
         mItems.addAll(yourObjectList);
     }
-/*
+
     public int getPosition(String key) {
         for (int i = 0; i < mItems.size(); i++) {
-            if (mItems.get(i).getObjectId() == key) {
+            if (mItems.get(i).getObjectId().equals(key)) {
                 return i;
             }
         }
         return 0;
     }
-*/
+
     @Override
     public int getCount() {
         return mItems.size();

@@ -11,12 +11,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RatingBar;
-import android.widget.Spinner;
 
 import com.parse.GetDataCallback;
 import com.parse.ParseACL;
@@ -38,11 +34,8 @@ public class AddBookActivity extends ActionBarActivity {
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Button saveBookButton;
-    private RatingBar ratingBar;
-    private Spinner minutesSpinner;
     private int minutes;
     private boolean photoTaken;
-    private float bookRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,33 +88,6 @@ public class AddBookActivity extends ActionBarActivity {
             }
         });
 
-        ratingBar = (RatingBar) findViewById(R.id.rb_ratingBar);
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                bookRating = rating;
-
-            }
-        });
-
-        minutesSpinner = (Spinner) findViewById(R.id.spn_minutes_spinner);
-        final Integer[] items = new Integer[] {0, 5, 10, 20, 30, 40, 50, 60, 75, 90, 105, 125, 150, 180, 210, 250, 285, 300, 350, 400, 450, 500, 600, 700, 850, 1000};
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, items);
-        minutesSpinner.setAdapter(adapter);
-
-        minutesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                minutes = items[parent.getSelectedItemPosition()];
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-
         saveBookButton = (Button) findViewById(R.id.btn_save_book);
         saveBookButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,39 +96,28 @@ public class AddBookActivity extends ActionBarActivity {
             }
         });
 
-
     }
 
 
     private void addBook (Book book) {
         String title = titleEditText.getText().toString().trim();
         String description = descriptionEditText.getText().toString().trim();
-        Log.v("TAGG", "minutes ====== > " + minutes);
 
         book.setTitle(title);
         book.setDescription(description);
         book.setUser(ParseUser.getCurrentUser());
-        book.setRating(bookRating);
         book.setTotalMinutes(minutes);
         book.setWeeklyMinutes(minutes);
         book.setMonthlyMinutes(minutes);
         DateTime bookCreatedAtDateTime = new DateTime(book.getCreatedAt());
         book.setMonthDate(bookCreatedAtDateTime);
         book.setWeekDate(bookCreatedAtDateTime);
-        //book.add("monthMinutesHistory", 0);
-        //book.add("weekMinutesHistory", 0);
 
         ParseACL acl = new ParseACL();
 
         // Give public read access
         acl.setPublicReadAccess(true);
         book.setACL(new ParseACL(ParseUser.getCurrentUser()));
-
-        if (!photoTaken) {
-
-        }
-
-
         // Save the book
         book.pinInBackground();
         book.saveEventually(new SaveCallback() {
@@ -181,8 +136,10 @@ public class AddBookActivity extends ActionBarActivity {
 
     private void updatePostButtonState () {
         int length = getTitleEditTextText().length();
-        boolean enabled = length > 0 && photoTaken;
-        saveBookButton.setEnabled(enabled);
+        if (length > 0 && photoTaken) {
+            saveBookButton.setTextColor(getResources().getColor(R.color.white));
+            saveBookButton.setEnabled(true);
+        }
     }
 
     public Book getCurrentBook() {

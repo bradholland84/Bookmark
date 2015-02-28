@@ -12,11 +12,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/save_book"
+        android:textColor="@color/black"
         android:id="@+id/btn_save_book"
+        android:enabled="false"
+        android:background="@drawable/button_custom"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:enabled="false" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,7 +37,9 @@
         android:id="@+id/et_title"
         android:layout_below="@+id/tv_title"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:hint="@string/title_hint"
+        android:layout_alignParentStart="true"
+        android:layout_margin="8dp" />
 
     <EditText
         android:layout_width="fill_parent"
@@ -42,7 +48,12 @@
         android:layout_below="@+id/et_title"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="42dp" />
+        android:gravity="bottom"
+        android:hint="@string/description_hint"
+        android:inputType="textMultiLine"
+        android:lines="4"
+        android:layout_margin="8dp"
+        android:layout_marginTop="8dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -55,65 +66,23 @@
         android:layout_alignParentStart="true"
         android:paddingLeft="12dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/rating"
-        android:id="@+id/tv_rating"
-        android:layout_below="@+id/et_description"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:paddingLeft="12dp" />
-
-    <RatingBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rb_ratingBar"
-        android:numStars="5"
-        android:rating="3.5"
-        android:stepSize=".5"
-        android:layout_below="@+id/tv_rating"
-        android:layout_alignParentLeft="true"
-
- />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/minutes_read"
-        android:id="@+id/tv_minutes"
-        android:layout_below="@+id/rb_ratingBar"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:paddingLeft="12dp" />
-
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/spn_minutes_spinner"
-        android:layout_toEndOf="@+id/tv_title"
-        android:layout_below="@+id/tv_minutes"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
 
     <com.parse.ParseImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/iv_cover_photo"
-        android:layout_below="@+id/spn_minutes_spinner"
-        android:layout_alignRight="@+id/tv_minutes"
-        android:layout_alignEnd="@+id/tv_minutes" />
+        android:layout_below="@+id/et_description"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/cover_hint"
         android:id="@+id/textView"
         android:layout_below="@+id/iv_cover_photo"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_centerHorizontal="true"
+        android:singleLine="true" />
 
 </RelativeLayout>

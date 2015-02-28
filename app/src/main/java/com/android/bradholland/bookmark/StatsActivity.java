@@ -34,6 +34,7 @@ public class StatsActivity extends ActionBarActivity {
     private Spinner spinner;
     private BookSpinnerAdapter spinnerAdapter;
     private Intent intent;
+    private boolean selected;
     private CharSequence Titles[]={"Weekly","Monthly"};
     private int Numboftabs =2;
     private String bookId;
@@ -49,6 +50,9 @@ public class StatsActivity extends ActionBarActivity {
         // Creating The Toolbar and setting it as the Toolbar for the activity
         toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        populateFragments();
 
         ParseQuery query = ParseQuery.getQuery("Books");
         query.whereEqualTo("user", ParseUser.getCurrentUser());
@@ -68,12 +72,16 @@ public class StatsActivity extends ActionBarActivity {
 
                 spinner = (Spinner) spinnerContainer.findViewById(R.id.toolbar_spinner);
                 spinner.setAdapter(spinnerAdapter);
+                spinner.setSelection(spinnerAdapter.getPosition(bookId));
 
                 spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         bookId = spinnerAdapter.getItem(position).getObjectId();
-                        populateFragments();
+                        if (selected) {
+                            populateFragments();
+                        }
+                        selected = true;
                     }
 
                     @Override
@@ -86,8 +94,7 @@ public class StatsActivity extends ActionBarActivity {
         });
 
        // getSupportActionBar().setTitle("Your Stats");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        populateFragments();
+
     }
 
     public void populateFragments() {
