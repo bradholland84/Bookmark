@@ -10,8 +10,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -47,8 +47,9 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     private ParseImageView coverPhoto;
     private EditText et_description;
     private TextView recentLogsHeader;
-    private Button btn_allLogs;
-    private Button btn_stats;
+    private ImageButton btn_allLogs;
+    private ImageButton btn_stats;
+    private ImageButton btn_share;
     private RatingBar ratingBar;
     private String title;
     private String bookId;
@@ -82,7 +83,6 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
 
         intent = getIntent();
         bookId = intent.getStringExtra("id");
-        Log.v("TAGID", bookId);
 
         buttonLayout = (LinearLayout)findViewById(R.id.ll_link_buttons);
         et_description = (EditText)findViewById(R.id.et_description);
@@ -91,8 +91,9 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
         recentLogsHeader = (TextView)findViewById(R.id.tv_log_header);
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(0, getResources().getColor(R.color.primary)));
         mScrollView = (ObservableScrollView) findViewById(R.id.scroll);
-        btn_allLogs = (Button) findViewById(R.id.btn_view_all_logs);
-        btn_stats = (Button) findViewById(R.id.btn_view_stats);
+        btn_allLogs = (ImageButton) findViewById(R.id.btn_view_all_logs);
+        btn_stats = (ImageButton) findViewById(R.id.btn_view_stats);
+        btn_share = (ImageButton) findViewById(R.id.btn_share);
         mScrollView.setScrollViewCallbacks(this);
         mParallaxImageHeight = getResources().getDimensionPixelSize(R.dimen.parallax_image_height);
 
@@ -111,6 +112,18 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                 Intent intent = new Intent(BookDetailActivityParallax.this, StatsActivity.class);
                 intent.putExtra("id", bookId);
                 startActivity(intent);
+            }
+        });
+
+        btn_share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Book recommendation");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "I have been reading " + title + " and " +
+                        "thought you might enjoy it! \n \n \t Sent via BookMark");
+                startActivity(Intent.createChooser(shareIntent, "Recommend " + title + " to a friend"));
             }
         });
 
@@ -202,9 +215,17 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     }
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        //Save the user's current title
+        savedInstanceState.putString("ID", bookId);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         onScrollChanged(mScrollView.getCurrentScrollY(), false, false);
+        bookId = savedInstanceState.getString("ID");
     }
 
     @Override
@@ -251,6 +272,11 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                 //ratingBar.setFocusableInTouchMode(true);
 
                 return true;
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

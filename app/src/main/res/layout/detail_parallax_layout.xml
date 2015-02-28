@@ -12,6 +12,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:paddingBottom="8dp">
 
 
@@ -48,28 +49,39 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/ll_link_buttons"
+                android:background="@color/white"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/et_description"
                 android:gravity="center_horizontal">
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="View all logs"
-                    android:textColor="@color/white"
-                    android:id="@+id/btn_view_all_logs"
-                    android:background="@drawable/button_custom"
-                    android:layout_margin="8dp" />
 
-                <Button
+
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="View stats"
                     android:textColor="@color/white"
                     android:id="@+id/btn_view_stats"
-                    android:background="@drawable/button_custom"
+                    android:background="@drawable/view_stats"
                     android:layout_margin="8dp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:id="@+id/btn_share"
+                    android:background="@drawable/share_button"
+                    android:layout_margin="8dp" />
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:id="@+id/btn_view_all_logs"
+                    android:background="@drawable/logs_button"
+                    android:layout_margin="8dp" />
+
+
             </LinearLayout>
 
 

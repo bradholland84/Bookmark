@@ -43,7 +43,8 @@
         android:layout_below="@+id/description_view"
         android:layout_toRightOf="@+id/iv_cover_photo"
         android:layout_toEndOf="@+id/iv_cover_photo"
-        android:textColor="@color/black" />
+        android:textColor="@color/primary_pressed"
+        android:paddingTop="8dp" />
 
 
 </RelativeLayout>

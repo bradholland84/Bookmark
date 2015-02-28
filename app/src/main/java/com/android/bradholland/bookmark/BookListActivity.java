@@ -33,6 +33,10 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+
 import java.util.List;
 
 
@@ -51,8 +55,7 @@ public class BookListActivity extends ActionBarActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("All books");
+        getSupportActionBar().setTitle("My Library");
 
         //get current user config and store
         final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -236,16 +239,15 @@ public class BookListActivity extends ActionBarActivity {
               imageView.setPlaceholder(d);
               titleView.setText(book.getTitle());
               descriptionView.setText(book.getDescription());
-              String stars = "\u2605";
-              String half = "\u00BD";
-              String rating = "";
-              for (double i = 0.0; i < Math.floor(book.getRating()); i++) {
-                  rating += stars;
-              }
-              if (Math.floor(book.getRating()) != book.getRating()) {
-                  rating += half;
-              }
-              ratingView.setText(rating);
+              DateTime time = book.getCreatedAtDateTime();
+              DateTimeFormatter fmt = new DateTimeFormatterBuilder()
+                      .appendMonthOfYearShortText()
+                      .appendLiteral(" ")
+                      .appendDayOfMonth(1)
+                      .appendLiteral(", ")
+                      .appendYear(4, 4)
+                      .toFormatter();
+              ratingView.setText("Added on " + time.toString(fmt));
 
               ParseFile photoFile = book.getParseFile("coverPhotoThumbnail");
               if (photoFile != null) {
@@ -280,7 +282,11 @@ public class BookListActivity extends ActionBarActivity {
           @Override
           public void onLoaded(List<Book> books, Exception e) {
               progress.dismiss();
-              ParseObject.pinAllInBackground(books);
+              if (books.isEmpty()) {
+
+              } else {
+                  ParseObject.pinAllInBackground(books);
+              }
           }
       });
   }
