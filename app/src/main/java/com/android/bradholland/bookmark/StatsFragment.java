@@ -152,7 +152,7 @@ public class StatsFragment extends Fragment {
             //monthly data formatter
             fmt = new DateTimeFormatterBuilder()
                     .appendMonthOfYearShortText()
-                    .appendLiteral(" ")
+                    .appendLiteral(" '")
                     .appendTwoDigitYear(2050)
                     .toFormatter();
         }
@@ -160,14 +160,26 @@ public class StatsFragment extends Fragment {
         Map<String, Integer> logMap = new LinkedHashMap<>();
         DateTime current = new DateTime();
         String currentKey = current.toString(fmt);
+        if (isWeek) {
+            for (int i = 1; i < 6; i++) {
+                DateTime next = current.minusWeeks(6 - i);
+                String nextKey = next.toString(fmt);
+                logMap.put(nextKey, 0);
+            }
+        } else {
+            for (int i = 1; i < 6; i++) {
+                DateTime next = current.minusMonths(6 - i);
+                String nextKey = next.toString(fmt);
+                logMap.put(nextKey, 0);
+            }
+        }
+        logMap.put(currentKey, 0);
         for (Log entry : logs) {
             String keyString = entry.getTimeStamp().toString(fmt);
-            //create keystring for comparison
+            //create key string for comparison
             if (logMap.containsKey(keyString)) {
                 int mins = logMap.get(keyString);
                 logMap.put(keyString, entry.getMinutesRead() + mins);
-            } else {
-                logMap.put(keyString, entry.getMinutesRead());
             }
         }
         // Use map data to create bar models, add to chart
@@ -175,7 +187,7 @@ public class StatsFragment extends Fragment {
             BarModel bm;
             if (key.equals(currentKey)) {
                 // highlight current week/month bar
-                 bm = new BarModel(key, logMap.get(key), 0xffffca28);
+                 bm = new BarModel("current", logMap.get(key), 0xffffca28);
             } else {
                  bm = new BarModel(key, logMap.get(key), 0xFF44B8B8);
             }

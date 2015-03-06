@@ -44,7 +44,10 @@
         android:padding="10dp"
         android:layout_below="@id/overall_titles_text"
         app:egFixedBarWidth="true"
-        app:egBarWidth="20dp"
-        app:egLegendHeight="30dp"/>
+        app:egVisibleBars="6"
+        app:egBarWidth="24dp"
+        app:egLegendHeight="30dp"
+        app:egEnableScroll="false"
+        app:egShowDecimal="false"/>
 
 </RelativeLayout>

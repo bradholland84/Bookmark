@@ -3,6 +3,7 @@ package com.android.bradholland.bookmark;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -22,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
@@ -57,6 +60,23 @@ public class BookListActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("My Library");
 
+
+        SharedPreferences pref = this.getSharedPreferences("com.android.bradholland.bookmark",
+                Context.MODE_PRIVATE);
+        if (!pref.contains("first time library")) {
+            pref.edit().putBoolean("first time library", true).apply();
+
+           ShowcaseView sv = new ShowcaseView.Builder(this)
+                    .setTarget(new ViewTarget(R.id.btn_add_book, this))
+                    .setContentTitle("Add a new book to your library")
+                    .setContentText("We'll save it to the cloud.")
+                    .setStyle(R.style.CustomShowcaseTheme)
+                    .doNotBlockTouches()
+                    .hideOnTouchOutside()
+                    .build();
+            sv.hideButton();
+        }
+
         //get current user config and store
         final ParseUser currentUser = ParseUser.getCurrentUser();
 
@@ -81,7 +101,9 @@ public class BookListActivity extends ActionBarActivity {
 
         // usually when the user logs in on this device for the first time and has
         // not created any book objects (none are pinned in the background)
+        /*
         if (booksQueryAdapter.getCount() == 0) {
+
             ParseQueryAdapter.QueryFactory<Book> onlineFactory =
                     new ParseQueryAdapter.QueryFactory<Book>() {
                         public ParseQuery<Book> create() {
@@ -94,6 +116,7 @@ public class BookListActivity extends ActionBarActivity {
             adapt(onlineFactory);
             booksListView.setAdapter(booksQueryAdapter);
         }
+        */
 
         //floating action button declaration for awesome material design type button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_add_book);

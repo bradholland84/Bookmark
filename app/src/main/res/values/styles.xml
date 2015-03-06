@@ -22,6 +22,16 @@
         <item name="android:padding">16dp</item>
     </style>
 
+    <style name="CustomShowcaseTheme" parent="ShowcaseView.Light" >
+        <item name="sv_backgroundColor">@android:color/transparent</item>
+        <item name="sv_showcaseColor">@color/primary</item>
+        <item name="sv_titleTextAppearance">@style/CustomTitle</item>
+    </style>
+
+    <style name="CustomTitle" parent="TextAppearance.ShowcaseView.Title">
+        <item name="android:textColor">@color/primary</item>
+    </style>
+
     <style name="ToolBar.Spinner.Material" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
         <item name="android:background">?android:selectableItemBackground</item>
         <item name="android:dropDownSelector">?android:selectableItemBackground</item>
