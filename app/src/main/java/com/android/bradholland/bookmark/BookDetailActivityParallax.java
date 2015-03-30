@@ -1,6 +1,9 @@
 package com.android.bradholland.bookmark;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
@@ -128,8 +131,9 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
         });
 
         ParseQuery<Book> query = ParseQuery.getQuery("Books");
-        query.fromLocalDatastore();
-
+        if (!isNetworkAvailable()) {
+            query.fromLocalDatastore();
+        }
         query.whereEqualTo("objectId", bookId);
         query.getFirstInBackground(new GetCallback<Book>() {
             @Override
@@ -183,32 +187,44 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
         logQuery.findInBackground(new FindCallback<com.android.bradholland.bookmark.Log>() {
             @Override
             public void done(List<com.android.bradholland.bookmark.Log> logs, ParseException e) {
-                int size = logs.size();
-                loglayout = (LinearLayout)findViewById(R.id.ll_logs_preview);
-                loglayout.removeAllViews();
-                for (int i = 0; i < size; i++) {
-                    com.android.bradholland.bookmark.Log mLog = logs.get(i);
-                    View v = getLayoutInflater().inflate(R.layout.log_item, loglayout, false);
+                if (logs != null && !logs.isEmpty()) {
+                    int size = logs.size();
+                    loglayout = (LinearLayout) findViewById(R.id.ll_logs_preview);
+                    loglayout.removeAllViews();
+                    for (int i = 0; i < size; i++) {
+                        com.android.bradholland.bookmark.Log mLog = logs.get(i);
+                        View v = getLayoutInflater().inflate(R.layout.log_item, loglayout, false);
 
+                        TextView timeStamp = (TextView) v.findViewById(R.id.tv_timestamp);
+                        TextView minutes = (TextView) v.findViewById(R.id.tv_minutesRead);
+                        TextView notes = (TextView) v.findViewById(R.id.tv_notes);
+
+                        DateTimeFormatter fmt = new DateTimeFormatterBuilder()
+                                .appendMonthOfYearShortText()
+                                .appendLiteral(" ")
+                                .appendDayOfMonth(1)
+                                .appendLiteral(", ")
+                                .appendYear(4, 4)
+                                .toFormatter();
+                        timeStamp.setText(mLog.getTimeStamp().toString(fmt));
+                        minutes.setText("" + mLog.getMinutesRead() + " Minutes ");
+                        if (mLog.getNotes().equals("")) {
+                            mLog.setNotes("Blank note");
+                        }
+                        notes.setText(mLog.getNotes());
+                        loglayout.addView(v, i);
+                    }
+                } else {
+                    loglayout = (LinearLayout) findViewById(R.id.ll_logs_preview);
+                    View v = getLayoutInflater().inflate(R.layout.log_item, loglayout, false);
                     TextView timeStamp = (TextView) v.findViewById(R.id.tv_timestamp);
                     TextView minutes = (TextView) v.findViewById(R.id.tv_minutesRead);
                     TextView notes = (TextView) v.findViewById(R.id.tv_notes);
-
-                    DateTimeFormatter fmt = new DateTimeFormatterBuilder()
-                            .appendMonthOfYearShortText()
-                            .appendLiteral(" ")
-                            .appendDayOfMonth(1)
-                            .appendLiteral(", ")
-                            .appendYear(4, 4)
-                            .toFormatter();
-                    timeStamp.setText(mLog.getTimeStamp().toString(fmt));
-                    minutes.setText("" + mLog.getMinutesRead() + " Minutes ");
-                    if (mLog.getNotes().equals("")) {
-                        mLog.setNotes("Blank note");
-                    }
-                    notes.setText(mLog.getNotes());
-                    loglayout.addView(v, i);
-
+                    timeStamp.setText("");
+                    minutes.setText("0 Minutes");
+                    notes.setText("There are no logs to display for this title.");
+                    notes.setTextColor(getResources().getColor(R.color.accent_pressed));
+                    loglayout.addView(v, 0);
                 }
             }
         });
@@ -235,7 +251,9 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
         mToolbarView.setBackgroundColor(ScrollUtils.getColorWithAlpha(alpha, baseColor));
         ViewHelper.setTranslationY(mImageView, scrollY / 2);
         ViewHelper.setTranslationY(et_description, scrollY / 2);
-        ViewHelper.setTranslationY(loglayout, scrollY / 2);
+        if (loglayout != null) {
+            ViewHelper.setTranslationY(loglayout, scrollY / 2);
+        }
         ViewHelper.setTranslationY(recentLogsHeader, scrollY / 2);
         ViewHelper.setTranslationY(buttonLayout, scrollY / 2);
     }
@@ -429,6 +447,13 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                     }
                 })
                 .show();
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }

@@ -26,6 +26,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.melnykov.fab.FloatingActionButton;
+import com.parse.DeleteCallback;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -35,6 +37,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -85,7 +88,9 @@ public class BookListActivity extends ActionBarActivity {
             new ParseQueryAdapter.QueryFactory<Book>() {
                 public ParseQuery<Book> create() {
                     ParseQuery query = new ParseQuery("Books");
-                    query.fromLocalDatastore();
+                    if (!isNetworkAvailable()) {
+                        query.fromLocalDatastore();
+                    }
                     query.whereEqualTo("user", currentUser);
                     query.orderByDescending("createdAt");
                     return query;
@@ -174,6 +179,10 @@ public class BookListActivity extends ActionBarActivity {
                 return true;
 
             case R.id.action_settings:
+                return true;
+
+            case R.id.cloud_sync:
+                cloudSync();
                 return true;
 
             case R.id.log_out:
@@ -323,6 +332,42 @@ public class BookListActivity extends ActionBarActivity {
 
   public void doListQuery() {
       booksQueryAdapter.loadObjects();
+  }
+
+  public void cloudSync() {
+      if (isNetworkAvailable()) {
+          final ParseQuery<Book> localQuery = ParseQuery.getQuery("Books");
+          localQuery.fromLocalDatastore();
+          localQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+          localQuery.findInBackground(new FindCallback<Book>() {
+              @Override
+              public void done(List<Book> books, ParseException e) {
+                  if (books != null && !books.isEmpty()) {
+                      ParseObject.unpinAllInBackground(books, new DeleteCallback() {
+                          @Override
+                          public void done(ParseException e) {
+                              ParseQuery<Book> cloudQuery = ParseQuery.getQuery("Books");
+                              cloudQuery.whereEqualTo("user", ParseUser.getCurrentUser());
+                              cloudQuery.findInBackground(new FindCallback<Book>() {
+                                  @Override
+                                  public void done(List<Book> books, ParseException e) {
+                                      ParseObject.pinAllInBackground(books, new SaveCallback() {
+                                          @Override
+                                          public void done(ParseException e) {
+                                              doListQuery();
+                                          }
+                                      });
+                                  }
+                              });
+                          }
+                      });
+                  }
+              }
+          });
+      } else {
+          // no network connection
+          Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+      }
   }
 
 

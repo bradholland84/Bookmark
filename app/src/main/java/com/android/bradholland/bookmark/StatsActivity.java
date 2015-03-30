@@ -1,6 +1,9 @@
 package com.android.bradholland.bookmark;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -56,6 +59,9 @@ public class StatsActivity extends ActionBarActivity {
 
         ParseQuery query = ParseQuery.getQuery("Books");
         query.whereEqualTo("user", ParseUser.getCurrentUser());
+        if (!isNetworkAvailable()) {
+            query.fromLocalDatastore();
+        }
         query.orderByDescending("createdAt");
         query.findInBackground(new FindCallback<Book>() {
             @Override
@@ -144,5 +150,12 @@ public class StatsActivity extends ActionBarActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

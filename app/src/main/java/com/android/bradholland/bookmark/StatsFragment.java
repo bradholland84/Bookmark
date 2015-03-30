@@ -1,7 +1,10 @@
 package com.android.bradholland.bookmark;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -65,6 +68,9 @@ public class StatsFragment extends Fragment {
         allTitlesBarChart = (BarChart) v.findViewById(R.id.all_books_chart);
 
         ParseQuery<Book> query = ParseQuery.getQuery("Books");
+        if (!isNetworkAvailable()) {
+            query.fromLocalDatastore();
+        }
         query.whereEqualTo("objectId", getArguments().getString("bookId"));
         query.getFirstInBackground(new GetCallback<Book>() {
             @Override
@@ -108,6 +114,9 @@ public class StatsFragment extends Fragment {
     private void newPopulateChart() {
         ParseQuery<Log> logQuery = ParseQuery.getQuery("Logs");
         logQuery.whereEqualTo("parent", mBook);
+        if (!isNetworkAvailable()) {
+            logQuery.fromLocalDatastore();
+        }
         logQuery.orderByAscending("timeStamp");
         logQuery.findInBackground(new FindCallback<Log>() {
             @Override
@@ -125,6 +134,9 @@ public class StatsFragment extends Fragment {
     private void populateAllBooksChart() {
         ParseQuery<Log> logQuery = ParseQuery.getQuery("Logs");
         logQuery.whereEqualTo("createdBy", ParseUser.getCurrentUser());
+        if (!isNetworkAvailable()) {
+            logQuery.fromLocalDatastore();
+        }
         logQuery.orderByAscending("timeStamp");
         logQuery.findInBackground(new FindCallback<Log>() {
             @Override
@@ -194,5 +206,13 @@ public class StatsFragment extends Fragment {
             chart.addBar(bm);
         }
         chart.startAnimation();
+    }
+
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
