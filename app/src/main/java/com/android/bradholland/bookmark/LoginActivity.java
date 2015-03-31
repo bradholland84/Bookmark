@@ -12,12 +12,14 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.squareup.picasso.Picasso;
 
 /**
  * Activity which displays a login screen to the user, offering registration as well.
@@ -32,6 +34,9 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_login);
+
+        ImageView background = (ImageView) findViewById(R.id.iv_background);
+        Picasso.with(this).load(R.drawable.blurrybookshelfbg).fit().centerCrop().into(background);
 
         // Set up the login form.
         usernameEditText = (EditText) findViewById(R.id.username);

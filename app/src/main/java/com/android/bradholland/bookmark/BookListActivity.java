@@ -189,7 +189,9 @@ public class BookListActivity extends ActionBarActivity {
                 Log.v("logout", "log out called");
                 ParseUser.logOut();
                 Intent intent = new Intent(BookListActivity.this, DispatchActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+                finish();
                 return true;
 
             default:
