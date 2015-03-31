@@ -33,6 +33,7 @@ public class CameraFragment extends Fragment {
     private ParseFile photoFile;
     private ImageButton photoButton;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent,
                              Bundle savedInstanceState) {
@@ -58,26 +59,33 @@ public class CameraFragment extends Fragment {
             public void onClick(View v) {
                 if (camera == null)
                     return;
-                camera.takePicture(new Camera.ShutterCallback() {
 
+                Camera.AutoFocusCallback cb = new Camera.AutoFocusCallback() {
                     @Override
-                    public void onShutter() {
-                        // nothing to do
+                    public void onAutoFocus(boolean success, Camera camera) {
+                        camera.takePicture(new Camera.ShutterCallback() {
+
+                            @Override
+                            public void onShutter() {
+                                // nothing to do
+                            }
+
+                        }, null, new Camera.PictureCallback() {
+
+                            @Override
+                            public void onPictureTaken(byte[] data, Camera camera) {
+                                saveScaledPhoto(data);
+                            }
+
+                        });
                     }
-
-                }, null, new Camera.PictureCallback() {
-
-                    @Override
-                    public void onPictureTaken(byte[] data, Camera camera) {
-                        saveScaledPhoto(data);
-                    }
-
-                });
-
+                };
+                camera.autoFocus(cb);
             }
         });
 
         surfaceView = (SurfaceView) v.findViewById(R.id.camera_surface_view);
+
         SurfaceHolder holder = surfaceView.getHolder();
         holder.addCallback(new Callback() {
 
@@ -95,6 +103,7 @@ public class CameraFragment extends Fragment {
 
             public void surfaceChanged(SurfaceHolder holder, int format,
                                        int width, int height) {
+                Log.v("surface", "surface changed called");
                 // nothing to do here
             }
 
@@ -115,7 +124,7 @@ public class CameraFragment extends Fragment {
 
         // Resize photo from camera byte array
         Bitmap coverPhoto = BitmapFactory.decodeByteArray(data, 0, data.length);
-        Bitmap coverPhotoScaled = Bitmap.createScaledBitmap(coverPhoto, 900, 600, false);
+        Bitmap coverPhotoScaled = resize(coverPhoto, coverPhoto.getWidth() / 2, coverPhoto.getHeight() / 2);
 
         // Override Android default landscape orientation and save portrait
         Matrix matrix = new Matrix();
@@ -157,6 +166,28 @@ public class CameraFragment extends Fragment {
         FragmentManager fm = getActivity().getFragmentManager();
         fm.popBackStack("Camera Fragment",
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    // Scales the image down by half to save memory
+    private static Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > 1) {
+                finalWidth = (int) ((float)maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float)maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
+        }
     }
 
     @Override

@@ -54,6 +54,9 @@ public class AddBookActivity extends ActionBarActivity {
         coverPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                coverPhoto.setEnabled(false);
+                titleEditText.setEnabled(false);
+                descriptionEditText.setEnabled(false);
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment cameraFragment = new CameraFragment();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -150,6 +153,9 @@ public class AddBookActivity extends ActionBarActivity {
     public void onResume() {
         super.onResume();
         Log.v("pic", "OnResume called");
+        coverPhoto.setEnabled(true);
+        titleEditText.setEnabled(true);
+        descriptionEditText.setEnabled(true);
         setParseCoverPhoto();
     }
 
@@ -159,6 +165,9 @@ public class AddBookActivity extends ActionBarActivity {
             photoTaken = true;
             updatePostButtonState();
             Log.v("pic", "file exists");
+            coverPhoto.setEnabled(true);
+            titleEditText.setEnabled(true);
+            descriptionEditText.setEnabled(true);
             coverPhoto.setParseFile(photoFile);
             coverPhoto.loadInBackground(new GetDataCallback() {
                 @Override
