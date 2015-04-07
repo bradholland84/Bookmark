@@ -1,9 +1,9 @@
 package com.android.bradholland.bookmark;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -52,6 +52,7 @@ public class BookListActivity extends ActionBarActivity {
     private ListView booksListView;
     private String selectedBookObjectId;
     private String contextBookId;
+    private ShowcaseView sv;
     public static final int DATA_CHANGED_REQUEST = 1;
 
     @Override
@@ -62,23 +63,6 @@ public class BookListActivity extends ActionBarActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("My Library");
-
-
-        SharedPreferences pref = this.getSharedPreferences("com.android.bradholland.bookmark",
-                Context.MODE_PRIVATE);
-        if (!pref.contains("first time library")) {
-            pref.edit().putBoolean("first time library", true).apply();
-
-           ShowcaseView sv = new ShowcaseView.Builder(this)
-                    .setTarget(new ViewTarget(R.id.btn_add_book, this))
-                    .setContentTitle("Add a new book to your library")
-                    .setContentText("We'll save it to the cloud.")
-                    .setStyle(R.style.CustomShowcaseTheme)
-                    .doNotBlockTouches()
-                    .hideOnTouchOutside()
-                    .build();
-            sv.hideButton();
-        }
 
         //get current user config and store
         final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -97,31 +81,12 @@ public class BookListActivity extends ActionBarActivity {
             }
         };
 
-        adapt(factory);
+        adapt(factory, R.id.btn_add_book, this);
 
         // attach query adapter to view
        booksListView = (ListView) findViewById(R.id.books_listview);
         booksListView.setAdapter(booksQueryAdapter);
         registerForContextMenu(booksListView);
-
-        // usually when the user logs in on this device for the first time and has
-        // not created any book objects (none are pinned in the background)
-        /*
-        if (booksQueryAdapter.getCount() == 0) {
-
-            ParseQueryAdapter.QueryFactory<Book> onlineFactory =
-                    new ParseQueryAdapter.QueryFactory<Book>() {
-                        public ParseQuery<Book> create() {
-                            ParseQuery query = new ParseQuery("Books");
-                            query.whereEqualTo("user", currentUser);
-                            query.orderByDescending("createdAt");
-                            return query;
-                        }
-                    };
-            adapt(onlineFactory);
-            booksListView.setAdapter(booksQueryAdapter);
-        }
-        */
 
         //floating action button declaration for awesome material design type button
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.btn_add_book);
@@ -129,11 +94,13 @@ public class BookListActivity extends ActionBarActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (sv != null) {
+                    sv.hide();
+                }
                 Intent intent = new Intent(BookListActivity.this, AddBookActivity.class);
                 startActivityForResult(intent, DATA_CHANGED_REQUEST);
             }
         });
-
 
         // set up click listener for book items
         booksListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -257,7 +224,7 @@ public class BookListActivity extends ActionBarActivity {
                 .show();
     }
 
-  public void adapt(ParseQueryAdapter.QueryFactory factory) {
+  public void adapt(ParseQueryAdapter.QueryFactory factory, final int viewTarget, final Activity activity) {
       booksQueryAdapter = new ParseQueryAdapter<Book>(this, factory) {
           @Override
           public View getItemView(Book book, View view, ViewGroup parent) {
@@ -317,7 +284,15 @@ public class BookListActivity extends ActionBarActivity {
           public void onLoaded(List<Book> books, Exception e) {
               progress.dismiss();
               if (books.isEmpty()) {
-
+                  Log.v("LIST", "EMPTY");
+                  sv = new ShowcaseView.Builder(activity)
+                          .setTarget(new ViewTarget(viewTarget, activity))
+                          .setContentTitle("Add a new book to your library")
+                          .setContentText("We'll save it to the cloud.")
+                          .setStyle(R.style.CustomShowcaseTheme)
+                          .doNotBlockTouches()
+                          .build();
+                  sv.hideButton();
               } else {
                   ParseObject.pinAllInBackground(books);
               }

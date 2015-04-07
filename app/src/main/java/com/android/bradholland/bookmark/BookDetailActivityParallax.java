@@ -222,7 +222,8 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                     TextView notes = (TextView) v.findViewById(R.id.tv_notes);
                     timeStamp.setText("");
                     minutes.setText("0 Minutes");
-                    notes.setText("There are no logs to display for this title.");
+                    notes.setText("There are no logs to display for this title. \n\nUse the New Log " +
+                            "Entry action button to record times you have read.");
                     notes.setTextColor(getResources().getColor(R.color.accent_pressed));
                     loglayout.addView(v, 0);
                 }
@@ -331,7 +332,6 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                 query.getInBackground(bookId, new GetCallback<Book>() {
                     @Override
                     public void done(Book book, ParseException e) {
-                        //TODO: Fix edit functionality
 
                         book.put("description", et_description.getText().toString());
                        // book.put("rating", ratingBar.getRating());
@@ -339,8 +339,6 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
 
                     }
                 });
-                //TODO: Fix edit functionality
-
                 et_description = (EditText) findViewById(R.id.et_description);
                 ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
                 et_description.setFocusable(false);
