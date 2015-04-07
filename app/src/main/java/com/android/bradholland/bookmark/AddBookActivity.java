@@ -48,9 +48,8 @@ public class AddBookActivity extends ActionBarActivity {
 
         book = new Book();
 
-
         coverPhoto = (ParseImageView) findViewById(R.id.iv_cover_photo);
-        coverPhoto.setPlaceholder(getResources().getDrawable(R.drawable.default_cover));
+        coverPhoto.setPlaceholder(getResources().getDrawable(R.drawable.camerabuttonicon));
         coverPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

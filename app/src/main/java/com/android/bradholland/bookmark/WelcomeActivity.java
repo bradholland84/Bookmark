@@ -48,7 +48,10 @@ public class WelcomeActivity extends Activity {
         passwordAgainEditText.setEnabled(false);
 
         ImageView background = (ImageView) findViewById(R.id.iv_background);
+        //ImageView logo = (ImageView) findViewById(R.id.logo);
         Picasso.with(this).load(R.drawable.bookshelfbg).fit().centerCrop().into(background);
+        //Picasso.with(this).load(R.drawable.logo).fit().into(logo);
+
 
         // Log in button click handler
         loginButton.setOnClickListener(new OnClickListener() {
