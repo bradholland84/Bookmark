@@ -157,8 +157,7 @@ public class StatsFragment extends Fragment {
                 //weekly data formatter
 
                 .appendWeekOfWeekyear(1)
-                .appendLiteral("/52  '")
-                .appendTwoDigitYear(2050)
+                .appendLiteral("/52")
                 .toFormatter();
         if (!isWeek) {
             //monthly data formatter

@@ -64,6 +64,7 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     private FloatingActionButton fab;
     private LinearLayout loglayout;
     private LinearLayout buttonLayout;
+    private String desc;
     private com.android.bradholland.bookmark.Log log;
     ActionMode mActionMode;
 
@@ -182,7 +183,10 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     public void doLogQuery() {
         ParseQuery<com.android.bradholland.bookmark.Log> logQuery = ParseQuery.getQuery("Logs");
         logQuery.whereEqualTo("bookId", bookId);
-        logQuery.setLimit(10);
+        if (!isNetworkAvailable()) {
+            logQuery.fromLocalDatastore();
+        }
+        logQuery.setLimit(5);
         logQuery.orderByDescending("timeStamp");
         logQuery.findInBackground(new FindCallback<com.android.bradholland.bookmark.Log>() {
             @Override
@@ -307,6 +311,7 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
         // Inflate a menu resource providing context menu items
         MenuInflater inflater = mode.getMenuInflater();
         fab.hide();
+        desc = et_description.getText().toString();
         inflater.inflate(R.menu.book_detail_contextual, menu);
         return true;
     }
@@ -319,6 +324,9 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         et_description.setTextColor(getResources().getColor(R.color.white));
+        et_description.setText(desc);
+        et_description.clearFocus();
+        et_description.setFocusable(false);
         fab.show();
         mActionMode = null;
     }
@@ -327,6 +335,7 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_book:
+                desc = et_description.getText().toString();
                 ParseQuery<Book> query = ParseQuery.getQuery("Books");
                 query.fromLocalDatastore();
                 query.getInBackground(bookId, new GetCallback<Book>() {
@@ -334,7 +343,6 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                     public void done(Book book, ParseException e) {
 
                         book.put("description", et_description.getText().toString());
-                       // book.put("rating", ratingBar.getRating());
                         book.saveEventually();
 
                     }
@@ -395,16 +403,18 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                         log.setBookId(bookId);
                         log.put("parent", mBook);
                         log.put("createdBy", ParseUser.getCurrentUser());
+                        log.pinInBackground();
                         log.saveEventually(new SaveCallback() {
                             public void done(ParseException e) {
                                 if (e == null) {
                                     Toast.makeText(getBaseContext(), "Log saved", Toast.LENGTH_SHORT).show();
-                                    doLogQuery();
+
                                 } else {
                                     Toast.makeText(getBaseContext(), "Error, Log not saved", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
+                        doLogQuery();
 
 
                     }

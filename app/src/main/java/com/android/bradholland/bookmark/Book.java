@@ -7,9 +7,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import org.joda.time.DateTime;
-import org.json.JSONArray;
-
-import java.util.Date;
 
 /**
  * Created by Brad on 10/8/2014.
@@ -22,51 +19,8 @@ public class Book extends ParseObject{
 
     }
 
-    public JSONArray getMonthMinutesHistory() {
-        return getJSONArray("monthMinutesHistory");
-    }
-
-    public void addMonthMinutesHistory(JSONArray value) {
-        add("monthMinutesHistory", value);
-    }
-
-    public JSONArray getWeekMinutesHistory() {
-        return getJSONArray("weekMinutesHistory");
-    }
-
-    public void addWeekMinutesHistory(JSONArray value) {
-        add("weekMinutesHistory", value);
-    }
-
-    public Date getMonthDate() {
-        return getDate("monthDate");
-    }
-
-    public void setMonthDate(DateTime dt) {
-        put("monthDate", dt.toDate());
-    }
-
-    public Date getWeekDate() {
-        return getDate("weekDate");
-    }
-
-    public void setWeekDate(DateTime dt) {
-        put("weekDate", dt.toDate());
-    }
-
     public DateTime getCreatedAtDateTime() {
         return new DateTime(this.getCreatedAt());
-    }
-
-    public boolean isCurrentTitle() {
-        return getBoolean("currentTitle");
-    }
-
-    public void setCurrentTitle(boolean isCurrentTitle) {
-        put("currentTitle", isCurrentTitle);
-        if (isCurrentTitle) {
-            //TODO: make parse query here to set all other books as not current
-        }
     }
 
     public String getTitle() {
@@ -107,30 +61,6 @@ public class Book extends ParseObject{
 
     public void setPhotoFile(ParseFile file) {
         put("coverPhoto", file);
-    }
-
-    public int getWeeklyMinutes() {
-        return getInt("weeklyMinutes");
-    }
-
-    public void setWeeklyMinutes(int value) {
-        put("weeklyMinutes", value);
-    }
-
-    public int getMonthlyMinutes() {
-        return getInt("monthlyMinutes");
-    }
-
-    public void setMonthlyMinutes(int value) {
-        put("monthlyMinutes", value);
-    }
-
-    public int getTotalMinutes() {
-        return getInt("totalMinutes");
-    }
-
-    public void setTotalMinutes(int value) {
-        put("totalMinutes", value);
     }
 
     public static ParseQuery<Book> getQuery() {
