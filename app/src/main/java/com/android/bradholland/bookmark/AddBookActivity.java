@@ -32,7 +32,6 @@ public class AddBookActivity extends ActionBarActivity {
     private EditText titleEditText;
     private EditText descriptionEditText;
     private Button saveBookButton;
-    private int minutes;
     private boolean photoTaken;
 
     @Override

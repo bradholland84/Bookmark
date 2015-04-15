@@ -98,9 +98,6 @@ public class StatsActivity extends ActionBarActivity {
 
             }
         });
-
-       // getSupportActionBar().setTitle("Your Stats");
-
     }
 
     public void populateFragments() {

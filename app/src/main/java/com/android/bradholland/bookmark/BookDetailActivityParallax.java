@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,13 +52,10 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
     private ImageButton btn_allLogs;
     private ImageButton btn_stats;
     private ImageButton btn_share;
-    private RatingBar ratingBar;
     private String title;
     private String bookId;
     private String description;
     private Intent intent;
-    private double bookRating;
-    private int minutes;
     private Book mBook;
     private FloatingActionButton fab;
     private LinearLayout loglayout;
@@ -143,7 +139,6 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                 mBook = book;
                 title = book.getTitle();
                 description = book.getDescription();
-                bookRating = book.getRating();
 
                 et_description.setText(description);
                 getSupportActionBar().setTitle(title);
@@ -278,13 +273,10 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                 // do edit stuff function here
 
                 et_description = (EditText) findViewById(R.id.et_description);
-                //ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
                 mActionMode = this.startSupportActionMode(this);
                 et_description.setFocusable(true);
                 et_description.setFocusableInTouchMode(true);
                 et_description.setTextColor(getResources().getColor(R.color.accent));
-                //ratingBar.setIsIndicator(false);
-                //ratingBar.setFocusableInTouchMode(true);
 
                 return true;
 
@@ -340,12 +332,9 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                     }
                 });
                 et_description = (EditText) findViewById(R.id.et_description);
-                ratingBar = (RatingBar) findViewById(R.id.rating_view_detail);
                 et_description.setFocusable(false);
                 et_description.setFocusableInTouchMode(false);
                 et_description.setTextColor(getResources().getColor(R.color.white));
-                //ratingBar.setIsIndicator(true);
-                //ratingBar.setFocusableInTouchMode(false);
                 fab.show();
                 mode.finish(); // Action picked, so close the CAB
                 Toast.makeText(this, "Book Updated!", Toast.LENGTH_SHORT).show();
@@ -395,15 +384,23 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                         log.setBookId(bookId);
                         log.put("parent", mBook);
                         log.put("createdBy", ParseUser.getCurrentUser());
-                        log.pinInBackground();
+                        log.pinInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                recentLogsHeader.setText(getResources().getString(R.string.recent_logs));
+                                if (!isNetworkAvailable()) {
+                                    doLogQuery();
+                                    Toast.makeText(getBaseContext(), "Log will sync when network is available", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
                         log.saveEventually(new SaveCallback() {
                             public void done(ParseException e) {
                                 if (e == null) {
-                                    Toast.makeText(getBaseContext(), "Log saved", Toast.LENGTH_SHORT).show();
-                                    recentLogsHeader.setText(getResources().getString(R.string.recent_logs));
+                                    Toast.makeText(getBaseContext(), "Log saved to cloud", Toast.LENGTH_SHORT).show();
                                     doLogQuery();
                                 } else {
-                                    Toast.makeText(getBaseContext(), "Error, Log not saved", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getBaseContext(), "Error, Log not saved to cloud", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
