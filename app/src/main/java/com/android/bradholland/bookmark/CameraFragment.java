@@ -99,7 +99,11 @@ public class CameraFragment extends Fragment {
                         });
                     }
                 };
-                camera.autoFocus(cb);
+                try {
+                    camera.autoFocus(cb);
+                } catch (RuntimeException e) {
+                    Log.e(TAG, "Autofocusfailed" + e.getMessage());
+                }
             }
         });
 
@@ -165,7 +169,6 @@ public class CameraFragment extends Fragment {
         // Save the scaled image to Parse
         photoFile = new ParseFile("cover_photo.jpg", scaledData);
         photoFile.saveInBackground(new SaveCallback() {
-
             public void done(ParseException e) {
                 if (e != null) {
                     Toast.makeText(getActivity(),

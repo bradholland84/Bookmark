@@ -3,7 +3,10 @@ package com.android.bradholland.bookmark;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -113,14 +116,21 @@ public class AddBookActivity extends ActionBarActivity {
         book.setACL(new ParseACL(ParseUser.getCurrentUser()));
         // Save the book
         book.pinInBackground();
-        book.saveEventually(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
-            }
-        });
+        if (!isNetworkAvailable()) {
+            book.saveEventually();
+            Intent intent = new Intent();
+            setResult(RESULT_OK, intent);
+            finish();
+        } else {
+            book.saveEventually(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    Intent intent = new Intent();
+                    setResult(RESULT_OK, intent);
+                    finish();
+                }
+            });
+        }
     }
 
     private String getTitleEditTextText () {
@@ -175,5 +185,12 @@ public class AddBookActivity extends ActionBarActivity {
         } else {
             Log.v("pic", "file NULL, doesn't exist yet");
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

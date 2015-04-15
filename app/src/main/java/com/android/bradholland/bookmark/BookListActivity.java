@@ -97,8 +97,12 @@ public class BookListActivity extends ActionBarActivity {
                 if (sv != null) {
                     sv.hide();
                 }
-                Intent intent = new Intent(BookListActivity.this, AddBookActivity.class);
-                startActivityForResult(intent, DATA_CHANGED_REQUEST);
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(getBaseContext(), "Cannot add books while offline", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(BookListActivity.this, AddBookActivity.class);
+                    startActivityForResult(intent, DATA_CHANGED_REQUEST);
+                }
             }
         });
 
