@@ -16,7 +16,18 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_weight="1"
-        android:src="@drawable/ic_action_save"
+        android:src="@drawable/ic_camera_white_36dp"
         android:layout_gravity="center_horizontal|bottom" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use Default"
+        android:id="@+id/btn_default"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:alpha=".75"
+        android:textColor="@color/primary" />
 
 </FrameLayout>

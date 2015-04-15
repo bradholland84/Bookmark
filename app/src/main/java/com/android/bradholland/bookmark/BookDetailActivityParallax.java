@@ -181,6 +181,8 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
 
 
     public void doLogQuery() {
+        loglayout = (LinearLayout) findViewById(R.id.ll_logs_preview);
+        loglayout.removeAllViews();
         ParseQuery<com.android.bradholland.bookmark.Log> logQuery = ParseQuery.getQuery("Logs");
         logQuery.whereEqualTo("bookId", bookId);
         if (!isNetworkAvailable()) {
@@ -219,17 +221,7 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                         loglayout.addView(v, i);
                     }
                 } else {
-                    loglayout = (LinearLayout) findViewById(R.id.ll_logs_preview);
-                    View v = getLayoutInflater().inflate(R.layout.log_item, loglayout, false);
-                    TextView timeStamp = (TextView) v.findViewById(R.id.tv_timestamp);
-                    TextView minutes = (TextView) v.findViewById(R.id.tv_minutesRead);
-                    TextView notes = (TextView) v.findViewById(R.id.tv_notes);
-                    timeStamp.setText("");
-                    minutes.setText("0 Minutes");
-                    notes.setText("There are no logs to display for this title. \n\nUse the New Log " +
-                            "Entry action button to record times you have read.");
-                    notes.setTextColor(getResources().getColor(R.color.accent_pressed));
-                    loglayout.addView(v, 0);
+                    recentLogsHeader.setText(getResources().getString(R.string.no_recent_logs));
                 }
             }
         });
@@ -408,15 +400,13 @@ public class BookDetailActivityParallax extends ActionBarActivity implements Act
                             public void done(ParseException e) {
                                 if (e == null) {
                                     Toast.makeText(getBaseContext(), "Log saved", Toast.LENGTH_SHORT).show();
-
+                                    recentLogsHeader.setText(getResources().getString(R.string.recent_logs));
+                                    doLogQuery();
                                 } else {
                                     Toast.makeText(getBaseContext(), "Error, Log not saved", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
-                        doLogQuery();
-
-
                     }
 
                     public void onNegative(MaterialDialog dialog) {

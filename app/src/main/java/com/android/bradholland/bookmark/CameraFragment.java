@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ public class CameraFragment extends Fragment {
     private Camera camera;
     private SurfaceView surfaceView;
     private ParseFile photoFile;
+    private Button useDefault;
     private ImageButton photoButton;
 
 
@@ -39,6 +43,7 @@ public class CameraFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_camera, parent, false);
 
+        useDefault = (Button) v. findViewById(R.id.btn_default);
         photoButton = (ImageButton) v.findViewById(R.id.camera_photo_button);
 
         if (camera == null) {
@@ -52,6 +57,20 @@ public class CameraFragment extends Fragment {
                         Toast.LENGTH_LONG).show();
             }
         }
+
+        useDefault.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Drawable d = getResources().getDrawable(R.drawable.default_cover);
+                Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+                ByteArrayOutputStream data = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, data);
+                byte[] bitmapdata = data.toByteArray();
+                saveScaledPhoto(bitmapdata, false);
+
+            }
+        });
+
 
         photoButton.setOnClickListener(new View.OnClickListener() {
 
@@ -74,7 +93,7 @@ public class CameraFragment extends Fragment {
 
                             @Override
                             public void onPictureTaken(byte[] data, Camera camera) {
-                                saveScaledPhoto(data);
+                                saveScaledPhoto(data, true);
                             }
 
                         });
@@ -108,7 +127,10 @@ public class CameraFragment extends Fragment {
             }
 
             public void surfaceDestroyed(SurfaceHolder holder) {
-                // nothing here
+                Log.v("surface", "surface destroyed called");
+                if (camera != null) {
+                    camera.release();
+                }
             }
 
         });
@@ -120,7 +142,7 @@ public class CameraFragment extends Fragment {
      * ParseQueryAdapter loads ParseFiles into a ParseImageView at whatever size
      * they are saved.
      */
-    private void saveScaledPhoto(byte[] data) {
+    private void saveScaledPhoto(byte[] data, boolean rotate) {
 
         // Resize photo from camera byte array
         Bitmap coverPhoto = BitmapFactory.decodeByteArray(data, 0, data.length);
@@ -128,7 +150,9 @@ public class CameraFragment extends Fragment {
 
         // Override Android default landscape orientation and save portrait
         Matrix matrix = new Matrix();
-        matrix.postRotate(90);
+        if (rotate) {
+            matrix.postRotate(90);
+        }
         Bitmap rotatedScaledMealImage = Bitmap.createBitmap(coverPhotoScaled, 0,
                 0, coverPhotoScaled.getWidth(), coverPhotoScaled.getHeight(),
                 matrix, true);

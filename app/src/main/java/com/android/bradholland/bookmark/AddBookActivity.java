@@ -147,7 +147,14 @@ public class AddBookActivity extends ActionBarActivity {
         coverPhoto.setEnabled(true);
         titleEditText.setEnabled(true);
         descriptionEditText.setEnabled(true);
+        getSupportActionBar().show();
         setParseCoverPhoto();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getFragmentManager().popBackStack();
     }
 
     public void setParseCoverPhoto() {

@@ -102,9 +102,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_log_header"
-                android:layout_marginBottom="8dp"
                 android:animateLayoutChanges="true"
-                android:gravity="fill_vertical"
                 android:background="@android:color/white" />
 
         </RelativeLayout>

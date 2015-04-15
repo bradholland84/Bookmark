@@ -39,12 +39,13 @@
     <string name="delete_book">Delete book</string>
     <string name="make_current_title">Make current title</string>
     <string name="minutes_read">Minutes read</string>
-    <string name="cover_hint">Press to take a photo of your book cover</string>
+    <string name="cover_hint">Add a photo of your book cover!</string>
     <string name="start_reading">Start reading</string>
     <string name="title_activity_graph">GraphActivity</string>
     <string name="dialog_time_read">Time read</string>
     <string name="view_all_logs">View all logs</string>
-    <string name="recent_logs">Recent reading logs</string>
+    <string name="recent_logs">Most Recent reading logs</string>
+    <string name="no_recent_logs">No recent reading logs</string>
     <string name="delete_log">Delete log</string>
 
 </resources>
