@@ -82,21 +82,25 @@ public class CameraFragment extends Fragment {
                 Camera.AutoFocusCallback cb = new Camera.AutoFocusCallback() {
                     @Override
                     public void onAutoFocus(boolean success, Camera camera) {
-                        camera.takePicture(new Camera.ShutterCallback() {
+                        if (success) {
+                            camera.takePicture(new Camera.ShutterCallback() {
 
-                            @Override
-                            public void onShutter() {
-                                // nothing to do
-                            }
+                                @Override
+                                public void onShutter() {
+                                    // nothing to do
+                                }
 
-                        }, null, new Camera.PictureCallback() {
+                            }, null, new Camera.PictureCallback() {
 
-                            @Override
-                            public void onPictureTaken(byte[] data, Camera camera) {
-                                saveScaledPhoto(data, true);
-                            }
+                                @Override
+                                public void onPictureTaken(byte[] data, Camera camera) {
+                                    saveScaledPhoto(data, true);
+                                }
 
-                        });
+                            });
+                        } else {
+                            Toast.makeText(getActivity().getBaseContext(), "Autofocus failed. Try again", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 };
                 try {
