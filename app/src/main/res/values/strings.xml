@@ -18,8 +18,10 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_password_again">Password Again</string>
     <string name="error_intro">"Please "</string>
+    <string name="error_email">Please specify your email address</string>
     <string name="error_blank_username">enter a username</string>
     <string name="error_blank_password">enter a password</string>
+    <string name="error_no_email">no email given</string>
     <string name="error_mismatched_passwords">enter the same password twice</string>
     <string name="error_join">", and "</string>
     <string name="error_end">.</string>
@@ -47,5 +49,9 @@
     <string name="recent_logs">Most Recent reading logs</string>
     <string name="no_recent_logs">No recent reading logs</string>
     <string name="delete_log">Delete log</string>
+    <string name="email">Email</string>
+    <string name="email_explain">Email to ONLY reset password</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="reset_dialog_content">Please enter the email address associated with your account and we will send you instructions to reset your password.</string>
 
 </resources>
