@@ -59,6 +59,13 @@ public class LogsActivity extends ActionBarActivity {
         logsListView.setAdapter(logsQueryAdapter);
         registerForContextMenu(logsListView);
 
+        logsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

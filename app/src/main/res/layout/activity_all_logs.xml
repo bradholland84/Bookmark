@@ -14,7 +14,6 @@
         android:id="@+id/logs_listview"
         android:layout_below="@+id/support_toolbar"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:longClickable="true" />
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

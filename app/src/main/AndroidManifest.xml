@@ -28,15 +28,16 @@
             android:screenOrientation="portrait" >
         </activity>
 
-        <activity android:name=".BookDetailActivityParallax">
+        <activity android:name=".BookDetailActivityParallax"
+            android:label="">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".DashboardActivity" />
         </activity>
 
         <activity android:name=".LogsActivity"
-            android:label="All Reading logs"
-            android:screenOrientation="portrait" >
+            android:label="All Reading logs" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".BookDetailActivityParallax" />
