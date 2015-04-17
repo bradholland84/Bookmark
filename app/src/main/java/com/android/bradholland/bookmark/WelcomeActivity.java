@@ -110,6 +110,7 @@ public class WelcomeActivity extends Activity {
                     emailEditText.setEnabled(true);
                     loginButton.setEnabled(false);
                     loginButton.setAlpha(0);
+                    registerButton.setText("Finish");
 
                     passwordAgainEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                         @Override
@@ -219,7 +220,7 @@ public class WelcomeActivity extends Activity {
         }
         if (email.length() == 0) {
             if (validationError) {
-                validationErrorMessage.append(getString(R.string.error_email));
+                validationErrorMessage.append(getString(R.string.error_join));
             }
             validationError = true;
             validationErrorMessage.append(getString(R.string.error_no_email));

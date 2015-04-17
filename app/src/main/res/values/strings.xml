@@ -16,7 +16,7 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_password_again">Password Again</string>
     <string name="error_intro">"Please "</string>
-    <string name="error_email">Please specify your email address</string>
+    <string name="error_email"> Please specify your email address</string>
     <string name="error_blank_username">enter a username</string>
     <string name="error_blank_password">enter a password</string>
     <string name="error_no_email">enter an email </string>
