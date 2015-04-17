@@ -13,9 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.GetDataCallback;
 import com.parse.ParseACL;
@@ -34,8 +38,9 @@ public class AddBookActivity extends ActionBarActivity {
     private ParseImageView coverPhoto;
     private EditText titleEditText;
     private EditText descriptionEditText;
-    private Button saveBookButton;
+    private TextView coverPhotoHint;
     private boolean photoTaken;
+    private boolean okToSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,7 @@ public class AddBookActivity extends ActionBarActivity {
         setContentView(R.layout.add_book_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.support_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         book = new Book();
 
@@ -90,14 +95,6 @@ public class AddBookActivity extends ActionBarActivity {
             }
         });
 
-        saveBookButton = (Button) findViewById(R.id.btn_save_book);
-        saveBookButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addBook(book);
-            }
-        });
-
     }
 
 
@@ -140,8 +137,7 @@ public class AddBookActivity extends ActionBarActivity {
     private void updatePostButtonState () {
         int length = getTitleEditTextText().length();
         if (length > 0 && photoTaken) {
-            saveBookButton.setTextColor(getResources().getColor(R.color.white));
-            saveBookButton.setEnabled(true);
+            okToSave = true;
         }
     }
 
@@ -166,6 +162,31 @@ public class AddBookActivity extends ActionBarActivity {
         getFragmentManager().popBackStack();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.add_book_actions, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save_book:
+                if (okToSave) {
+                    addBook(book);
+                } else {
+                    Toast.makeText(getBaseContext(), "Please fill out all of the fields & " +
+                            "choose a cover photo", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     public void setParseCoverPhoto() {
         final ParseFile photoFile = getCurrentBook().getPhotoFile();
         if (photoFile != null) {
@@ -180,6 +201,8 @@ public class AddBookActivity extends ActionBarActivity {
                 @Override
                 public void done(byte[] data, ParseException e) {
                     coverPhoto.setVisibility(View.VISIBLE);
+                    coverPhotoHint = (TextView)findViewById(R.id.tv_cover_photo_hint);
+                    coverPhotoHint.setText("Looks good! Touch to choose again.");
                 }
             });
         } else {
